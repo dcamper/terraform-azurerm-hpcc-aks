@@ -1,0 +1,10 @@
+security:
+  eclSecurity:
+    # Possible values:
+    # allow - functionality is permitted
+    # deny - functionality is not permitted
+    # allowSigned - functionality permitted only if code signed
+    embedded: "allowSigned"
+    pipe:  "allowSigned"
+    extern: "allowSigned"
+    datafile: "allowSigned"

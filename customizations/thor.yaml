@@ -1,0 +1,15 @@
+thor:
+- name: thor
+  prefix: thor
+  numWorkers: 2
+  maxJobs: 2
+  maxGraphs: 2
+  #managerResources:
+  #  cpu: "1"
+  #  memory: "2G"
+  #workerResources:
+  #  cpu: "4"
+  #  memory: "4G"
+  #eclAgentResources:
+  #  cpu: "1"
+  #  memory: "2G"

@@ -1,0 +1,37 @@
+storage:
+  planes:
+  - name: dali
+    storageSize: 10Gi
+    storageClass: "azurefile"
+    prefix: "/var/lib/HPCCSystems/dalistorage"
+    category: dali
+
+  - name: dll
+    prefix: "/var/lib/HPCCSystems/queries"
+    storageSize: 4Gi
+    storageClass: "azurefile"
+    category: dll
+
+  - name: sasha
+    storageSize: 2Gi
+    storageClass: "azurefile"
+    prefix: "/var/lib/HPCCSystems/sashastorage"
+    category: sasha
+
+  - name: data
+    storageSize: 100Gi
+    storageClass: "azurefile"
+    prefix: "/var/lib/HPCCSystems/hpcc-data"
+    category: data
+
+  - name: mydropzone
+    storageSize: 25Gi
+    storageClass: "azurefile"
+    prefix: "/var/lib/HPCCSystems/mydropzone"
+    category: lz
+
+sasha:
+  wu-archiver:
+    plane: sasha
+  dfuwu-archiver:
+    plane: sasha

@@ -6,6 +6,11 @@ variable "admin" {
   })
 }
 
+variable "api_server_authorized_ip_ranges" {
+  description = "Map of authorized CIDRs / IPs"
+  type        = map(string)
+}
+
 variable "expose_services" {
   description = "Expose ECLWatch and ELK to the Internet. This is not secure. Please consider before using it."
   type        = bool
