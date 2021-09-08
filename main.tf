@@ -141,6 +141,8 @@ module "kubernetes" {
 
   default_node_pool = "system" //name of the sub-key, which is the default node pool.
 
+  api_server_authorized_ip_ranges = local.access_map_cidr
+
 }
 
 resource "kubernetes_secret" "sa_secret" {
@@ -305,11 +307,13 @@ resource "azurerm_network_security_rule" "ingress_internet" {
   access                      = "Allow"
   protocol                    = "tcp"
   source_port_range           = "*"
-  destination_port_ranges     = ["8010", "5601"]
+  destination_port_ranges     = ["8010", "8002", "5601"]
   source_address_prefix       = "Internet"
   destination_address_prefix  = "*"
   resource_group_name         = module.virtual_network.subnets["iaas-public"].resource_group_name
   network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
+
+  depends_on = [helm_release.hpcc]
 }
 
 

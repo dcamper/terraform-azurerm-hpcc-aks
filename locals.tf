@@ -12,7 +12,13 @@ locals {
     var.metadata.resource_group_type != "" ? { resource_group_type = var.metadata.resource_group_type } : {}
   ) : module.metadata.names
 
-  tags = var.disable_naming_conventions ? merge(var.tags, { "admin" = var.admin.name, "email" = var.admin.email }) : merge(module.metadata.tags, { "admin" = var.admin.name, "email" = var.admin.email }, try(var.tags))
+  enforced_tags = {
+    "admin" = var.admin.name
+    "email" = var.admin.email
+    "owner" = var.admin.email
+    "owner_email" = var.admin.email
+  }
+  tags = var.disable_naming_conventions ? merge(var.tags, local.enforced_tags) : merge(module.metadata.tags, local.enforced_tags, try(var.tags))
 
   cluster_name = "${local.names.resource_group_type}-${local.names.product_name}-terraform-${local.names.location}-${var.admin.name}-${terraform.workspace}"
 
@@ -27,4 +33,13 @@ locals {
   az_command = try("az aks get-credentials --name ${module.kubernetes.name} --resource-group ${module.resource_group.name} --overwrite", "")
 
   is_windows_os = substr(pathexpand("~"), 0, 1) == "/" ? false : true
+
+  host_ip_cidr    = "${chomp(data.http.host_ip.body)}/32"
+  # Each value can have any kind of CIDR range
+  access_map_cidr = merge(var.api_server_authorized_ip_ranges, { "host_ip" = local.host_ip_cidr })
+  # Remove /31 and /32 CIDR ranges (some TF modules don't like them)
+  access_map_bare = zipmap(
+                            keys(local.access_map_cidr),
+                            [for s in values(local.access_map_cidr) : replace(s, "/\\/3[12]$/", "")]
+                          )
 }
