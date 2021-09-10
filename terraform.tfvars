@@ -26,7 +26,7 @@ tags = { "justification" = "testing" }
 
 resource_group = {
   unique_name = false
-  location    = "eastus2"
+  location    = "centralus"
 }
 
 node_pools = {
@@ -44,29 +44,22 @@ node_pools = {
     min_count           = 1
     max_count           = 2
   }
-
-  addpool2 = {
-    vm_size             = "Standard_B4ms"
-    enable_auto_scaling = true
-    min_count           = 0
-    max_count           = 2
-  }
 }
 
 hpcc = {
-  version   = "8.2.16"
+  version   = "8.2.18"
   namespace = "default"
-  name      = "myhpcck8s"
+  name      = "playhpcc"
   # chart     = ""
-  values    = ["./customizations/esp.yaml", "./customizations/roxie.yaml"]
-}
-
-storage = {
-  storage_account_name = ""
-  resource_group_name  = ""
-  # subscription_id     = ""
-  # chart  = ""
-  values = ["./customizations/storage.yaml"]
+  values    = [
+                "./customizations/storage.yaml",
+                "./customizations/esp.yaml",
+                "./customizations/eclcc.yaml",
+                "./customizations/thor.yaml",
+                "./customizations/hthor.yaml",
+                "./customizations/roxie.yaml",
+                "./customizations/security.yaml"
+              ]
 }
 
 elk = {

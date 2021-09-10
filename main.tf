@@ -164,7 +164,9 @@ resource "helm_release" "hpcc" {
   count = var.disable_helm ? 0 : 1
 
   name                       = var.hpcc.name
-  chart                      = local.hpcc_chart
+  chart                      = "hpcc"
+  repository                 = "https://hpcc-systems.github.io/helm-chart/"
+  version                    = var.hpcc.version
   create_namespace           = true
   namespace                  = try(var.hpcc.namespace, terraform.workspace)
   atomic                     = try(var.hpcc.atomic, null)
@@ -177,8 +179,11 @@ resource "helm_release" "hpcc" {
   wait_for_jobs              = try(var.hpcc.wait_for_jobs, null)
   lint                       = try(var.hpcc.lint, null)
 
-  values = concat(var.expose_services ? [file("${path.root}/values/esp.yaml")] : [],
-  try([for v in var.hpcc.values : file(v)], []), [file("${path.root}/values/values-retained-azurefile.yaml")])
+  values = concat(
+                   # var.expose_services ? [file("${path.root}/values/esp.yaml")] : [],
+                   can(var.storage.account.storage_account_name) ? [file("${path.root}/values/values-retained-azurefile.yaml")] : [],
+                   try([for v in var.hpcc.values : file(v)], [])
+  )
 
   dynamic "set" {
     for_each = var.image_root != "" && var.image_root != null ? [1] : []
@@ -308,12 +313,10 @@ resource "azurerm_network_security_rule" "ingress_internet" {
   protocol                    = "tcp"
   source_port_range           = "*"
   destination_port_ranges     = ["8010", "8002", "5601"]
-  source_address_prefix       = "Internet"
+  source_address_prefixes     = values(local.access_map_bare)
   destination_address_prefix  = "*"
   resource_group_name         = module.virtual_network.subnets["iaas-public"].resource_group_name
   network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
-
-  depends_on = [helm_release.hpcc]
 }
 
 
