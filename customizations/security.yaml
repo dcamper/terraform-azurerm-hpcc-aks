@@ -7,4 +7,4 @@ security:
     embedded: "allowSigned"
     pipe:  "allowSigned"
     extern: "allowSigned"
-    datafile: "allowSigned"
+    datafile: "allow"
