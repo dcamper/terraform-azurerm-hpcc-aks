@@ -1,130 +1,107 @@
-variable "admin" {
-  description = "Information for the user who administers the deployment."
-  type = object({
-    name  = string
-    email = string
-  })
+###############################################################################
+# Prompted variables (user will be asked to supply them at plan/apply time)
+###############################################################################
+
+variable "admin_email" {
+  type        = string
+  description = "REQUIRED.  Email address of the administrator of this HPCC Systems cluster.\nExample entry: jane.doe@hpccsystems.com"
+  validation {
+    condition     = length(regexall("^[^@]+@[^@]+$", var.admin_email)) > 0
+    error_message = "Value must at least look like a valid email address."
+  }
 }
 
-variable "api_server_authorized_ip_ranges" {
-  description = "Map of authorized CIDRs / IPs"
+variable "admin_username" {
+  type        = string
+  description = "REQUIRED.  Username of the administrator of this HPCC Systems cluster.\nExample entry: jdoe"
+  validation {
+    condition     = length(var.admin_username) > 1 && length(regexall(" ", var.admin_username)) == 0
+    error_message = "Value must at least two characters in length and contain no spaces."
+  }
+}
+
+variable "admin_name" {
+  type        = string
+  description = "REQUIRED.  Name of the administrator of this HPCC Systems cluster.\nExample entry: Jane Doe"
+}
+
+variable "product_name" {
+  type        = string
+  description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 2-24 characters in length, all lowercase, no spaces, only dashes for punctuation.\nExample entry: my-product"
+  validation {
+    condition     = length(regexall("^[a-z][a-z0-9\\-]{1,23}$", var.product_name)) == 1
+    error_message = "Value must be 2-24 characters in length, all lowercase, no spaces, only dashes for punctuation."
+  }
+}
+
+variable "hpcc_version" {
+  description = "REQUIRED.  The version of HPCC Systems to install.\nOnly versions in nn.nn.nn format are supported."
+  type        = string
+  validation {
+    condition     = length(regexall("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}", var.hpcc_version)) == 1
+    error_message = "Value must be in nn.nn.nn format."
+  }
+}
+
+variable "enable_roxie" {
+  description = "REQUIRED.  Enable ROXIE?\nThis will also expose port 8002 on the cluster.\nExample entry: false"
+  type        = bool
+}
+
+variable "enable_elk" {
+  description = "REQUIRED.  Enable ELK (Elasticsearch, Logstash, and Kibana) Stack?\nThis will also expose port 5601 on the cluster.\nExample entry: false"
+  type        = bool
+}
+
+variable "extra_tags" {
+  description = "REQUIRED.  Map of name => value tags that can will be associated with the cluster.\nFormat is '{\"name\"=\"value\" [, \"name\"=\"value\"]*}'.\nThe 'name' portion must be unique.\nTo add no tags, enter '{}'."
   type        = map(string)
 }
 
-variable "expose_services" {
-  description = "Expose ECLWatch and ELK to the Internet. This is not secure. Please consider before using it."
-  type        = bool
-  default     = false
+variable "azure_region" {
+  type        = string
+  description = "REQUIRED.  The Azure region abbreviation in which to create these resources.\nMust be one of [\"eastus2\", \"centralus\"].\nExample entry: eastus2"
+  validation {
+    condition     = contains(["eastus2", "centralus"], var.azure_region)
+    error_message = "Value must be one of [\"eastus2\", \"centralus\"]."
+  }
 }
+
+variable "authorized_ip_cidr" {
+  description = "REQUIRED.  Map of name => CIDR IP addresses that can access the cluster.\nFormat is '{\"name\"=\"cidr\" [, \"name\"=\"cidr\"]*}'.\nThe 'name' portion must be unique.\nTo add no CIDR addresses, enter '{}'.\nThe corporate network and your current IP address will be added automatically."
+  type        = map(string)
+}
+
+variable "storage_account_name" {
+  type        = string
+  description = "OPTIONAL.  If you are attaching to an existing storage account, enter its name here.\nLeave blank if you do not have a storage account.\nIf you enter something here then you must also enter a resource group for the storage account.\nExample entry: my-product-sa"
+}
+
+variable "storage_account_resource_group_name" {
+  type        = string
+  description = "OPTIONAL.  If you are attaching to an existing storage account, enter its resource group name here.\nLeave blank if you do not have a storage account.\nIf you enter something here then you must also enter a name for the storage account."
+}
+
+variable "node_size" {
+  type        = string
+  description = "REQUIRED.  The VM size for each node in the HPCC Systems node pool.\nRecommend \"Standard_B4ms\" or better.\nSee https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general for more information."
+}
+
+variable "max_node_count" {
+  type        = number
+  description = "REQUIRED.  The maximum number of VM nodes to allocate for the HPCC Systems node pool.\nMust be 2 or more."
+  validation {
+    condition     = var.max_node_count >= 2
+    error_message = "Value must be 2 or more."
+  }
+}
+
+###############################################################################
+# Unprompted variables that can be overridden within a .tfvars file
+###############################################################################
 
 variable "auto_connect" {
-  description = "Automatically connect to the Kubernetes cluster from the host machine by overwriting the current context."
+  description = "If true, creates (and possibly overwrites) a context for kubectl and sets it to the just-created AKS cluster."
   type        = bool
-  default     = false
-}
-
-variable "disable_helm" {
-  description = "Disable Helm deployments by Terraform."
-  type        = bool
-  default     = false
-}
-
-variable "disable_naming_conventions" {
-  description = "Naming convention module."
-  type        = bool
-  default     = false
-}
-
-variable "metadata" {
-  description = "Metadata module variables."
-  type = object({
-    market              = string
-    sre_team            = string
-    environment         = string
-    product_name        = string
-    business_unit       = string
-    product_group       = string
-    subscription_type   = string
-    resource_group_type = string
-    project             = string
-  })
-
-  default = {
-    business_unit       = ""
-    environment         = ""
-    market              = ""
-    product_group       = ""
-    product_name        = "hpcc"
-    project             = ""
-    resource_group_type = ""
-    sre_team            = ""
-    subscription_type   = ""
-  }
-}
-
-variable "tags" {
-  description = "Additional resource tags."
-  type        = map(string)
-
-  default = {
-    "" = ""
-  }
-}
-
-variable "resource_group" {
-  description = "Resource group module variables."
-  type        = any
-
-  default = {
-    unique_name = true
-    location    = null
-  }
-}
-
-variable "node_pools" {
-  description = "node pools"
-  type        = any # top level keys are node pool names, sub-keys are subset of node_pool_defaults keys
-  default     = { default = {} }
-}
-
-variable "image_root" {
-  description = "Root of the image other than hpccsystems."
-  type        = string
-  default     = null
-}
-
-variable "image_name" {
-  description = "Root of the image other than hpccsystems."
-  type        = string
-  default     = null
-}
-
-variable "image_version" {
-  description = "Root of the image other than hpccsystems."
-  type        = string
-  default     = null
-}
-
-variable "hpcc" {
-  description = "HPCC Helm chart variables."
-  type        = any
-  default     = { default = { name = "myhpcck8s" } }
-}
-
-variable "storage" {
-  description = "Storage account arguments."
-  type        = any
-  default     = { default = {} }
-}
-
-variable "existing_storage" {
-  description = "Existing storage account metadata."
-  type        = any
-  default     = { default = {} }
-}
-
-variable "elk" {
-  description = "HPCC Helm chart variables."
-  type        = any
-  default     = { default = { name = "myhpccelk", enable = true } }
+  default     = true
 }
