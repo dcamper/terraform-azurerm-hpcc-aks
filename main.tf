@@ -185,7 +185,7 @@ resource "helm_release" "hpcc" {
                    try([for v in local.hpcc.values : file(v)], [])
   )
 
-  depends_on = [helm_release.storage]
+  depends_on = [helm_release.storage, module.kubernetes]
 }
 
 resource "helm_release" "elk" {
