@@ -47,10 +47,11 @@ locals {
   elk_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/elastic4hpcclogs-1.0.0.tgz"
 
   hpcc = {
-    version   = var.hpcc_version
-    namespace = "default"
-    name      = "${local.metadata.product_name}-hpcc"
-    values    = [
+    version        = var.hpcc_version
+    namespace      = "default"
+    name           = "${local.metadata.product_name}-hpcc"
+
+    values         = [
       var.enable_roxie ? "./customizations/esp-roxie.yaml" : "./customizations/esp.yaml",
       "./customizations/eclcc.yaml",
       "./customizations/thor.yaml",
@@ -58,6 +59,10 @@ locals {
       var.enable_roxie ? "./customizations/roxie-on.yaml" : "./customizations/roxie-off.yaml",
       "./customizations/security.yaml"
     ]
+
+    ecl_watch_port = 8010
+    roxie_port     = 8002
+    elk_port       = 5601
   }
 
   elk = {
@@ -81,9 +86,9 @@ locals {
   hpcc_user_ip_cidr_list = [for s in var.hpcc_user_ip_cidr_list : replace(s, "/\\/3[12]$/", "")]
 
   exposed_ports = concat(
-    ["8010"],
-    var.enable_elk ? ["5601"] : [],
-    var.enable_roxie ? ["8002"] : []
+    [tostring(local.hpcc.ecl_watch_port)],
+    var.enable_elk ? [tostring(local.hpcc.elk_port)] : [],
+    var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
   )
 
   is_windows_os = substr(pathexpand("~"), 0, 1) == "/" ? false : true
