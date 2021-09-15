@@ -280,8 +280,8 @@ resource "azurerm_private_link_service" "private_link_svc" {
   }
 }
 
-resource "azurerm_network_security_rule" "ingress_internet" {
-  name                        = "Allow_Internet_Ingress"
+resource "azurerm_network_security_rule" "ingress_internet_admin" {
+  name                        = "HPCC_Admin"
   priority                    = 100
   direction                   = "Inbound"
   access                      = "Allow"
@@ -294,6 +294,20 @@ resource "azurerm_network_security_rule" "ingress_internet" {
   network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
 }
 
+resource "azurerm_network_security_rule" "ingress_internet_users" {
+  count = length(local.hpcc_user_ip_cidr_list) > 0 ? 1 : 0
+  name                        = "HPCC_Users"
+  priority                    = 110
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "tcp"
+  source_port_range           = "*"
+  destination_port_ranges     = local.exposed_ports
+  source_address_prefixes     = local.hpcc_user_ip_cidr_list
+  destination_address_prefix  = "*"
+  resource_group_name         = module.virtual_network.subnets["iaas-public"].resource_group_name
+  network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
+}
 
 resource "null_resource" "az" {
   count = var.auto_connect ? 1 : 0

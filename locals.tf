@@ -68,19 +68,21 @@ locals {
 
   is_windows_os = substr(pathexpand("~"), 0, 1) == "/" ? false : true
 
-  default_authorized_ip_cidrs = {
+  default_admin_ip_cidr_maps = {
 	"alpharetta" = "66.241.32.0/19"
 	"boca"       = "209.243.48.0/20"
   }
 
   host_ip_cidr    = "${chomp(data.http.host_ip.body)}/32"
   # Each value can have any kind of CIDR range
-  access_map_cidr = merge(local.default_authorized_ip_cidrs, try(var.authorized_ip_cidr), { "host_ip" = local.host_ip_cidr })
+  access_map_cidr = merge(local.default_admin_ip_cidr_maps, try(var.admin_ip_cidr_map), { "host_ip" = local.host_ip_cidr })
   # Remove /31 and /32 CIDR ranges (some TF modules don't like them)
   access_map_bare = zipmap(
 	keys(local.access_map_cidr),
 	[for s in values(local.access_map_cidr) : replace(s, "/\\/3[12]$/", "")]
   )
+  # Rewrite HPCC user access CIDR addresses, removing /31 and /32
+  hpcc_user_ip_cidr_list = [for s in var.hpcc_user_ip_cidr_list : replace(s, "/\\/3[12]$/", "")]
 
   exposed_ports = concat(
     ["8010"],

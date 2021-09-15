@@ -67,9 +67,14 @@ variable "azure_region" {
   }
 }
 
-variable "authorized_ip_cidr" {
-  description = "REQUIRED.  Map of name => CIDR IP addresses that can access the cluster.\nFormat is '{\"name\"=\"cidr\" [, \"name\"=\"cidr\"]*}'.\nThe 'name' portion must be unique.\nTo add no CIDR addresses, enter '{}'.\nThe corporate network and your current IP address will be added automatically."
+variable "admin_ip_cidr_map" {
+  description = "REQUIRED.  Map of name => CIDR IP addresses that can administrate this AKS.\nFormat is '{\"name\"=\"cidr\" [, \"name\"=\"cidr\"]*}'.\nThe 'name' portion must be unique.\nTo add no CIDR addresses, enter '{}'.\nThe corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user."
   type        = map(string)
+}
+
+variable "hpcc_user_ip_cidr_list" {
+  description = "REQUIRED.  List of additional CIDR addresses that can access this HPCC Systems cluster.\nTo add no CIDR addresses, enter '[]'."
+  type        = list(string)
 }
 
 variable "storage_account_name" {

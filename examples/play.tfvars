@@ -29,7 +29,7 @@ enable_elk=false
 # Map of name => value tags that can will be associated with the cluster.
 # Format is '{"name"="value" [, "name"="value"]*}'.
 # The 'name' portion must be unique.
-# To add no tags, enter '{}'.
+# To add no tags, use '{}'.
 # Value type: map of string
 
 extra_tags={}
@@ -72,26 +72,32 @@ admin_username="dcamper"
 
 azure_region="centralus"
 
-# Map of name => CIDR IP addresses that can access the cluster.
+# Map of name => CIDR IP addresses that can administrate this AKS.
 # Format is '{"name"="cidr" [, "name"="cidr"]*}'.
 # The 'name' portion must be unique.
-# To add no CIDR addresses, enter '{}'.
-# The corporate network and your current IP address will be added automatically.
+# To add no CIDR addresses, use '{}'.
+# The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user.
 # Value type: map of string
 
-authorized_ip_cidr={"arjuna" = "107.213.192.91/32", "bahar" = "68.23.85.231/32", "tombolo" = "3.84.118.57/32"}
+admin_ip_cidr_map={"arjuna" = "107.213.192.91/32", "bahar" = "68.23.85.231/32", "tombolo" = "3.84.118.57/32"}
 
-# If you are attaching to an existing storage account, enter its name here.
+# List of additional CIDR addresses that can access this HPCC Systems cluster.
+# To add no CIDR addresses, enter '[]'.
+# Value type: list of string
+
+hpcc_user_ip_cidr_list=[]
+
+# If you are attaching to an existing storage account, put its name here.
 # Leave as an empty string if you do not have a storage account.
-# If you enter something here then you must also enter a resource group for the storage account.
+# If you put something here then you must also define a resource group for the storage account.
 # Value type: string
 # Example entry: "my-product-sa"
 
 storage_account_name=""
 
-# If you are attaching to an existing storage account, enter its resource group name here.
+# If you are attaching to an existing storage account, put its resource group name here.
 # Leave as an empty string if you do not have a storage account.
-# If you enter something here then you must also enter a name for the storage account.
+# If you put something here then you must also define a name for the storage account.
 # Value type: string
 
 storage_account_resource_group_name=""
