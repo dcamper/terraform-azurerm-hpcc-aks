@@ -102,11 +102,11 @@ resource "azurerm_private_endpoint" "pe" {
   dynamic "private_service_connection" {
     for_each = local.has_storage_account ? [1] : []
     content {
-	  name                           = "sa_privateserviceconnection"
-	  private_connection_resource_id = data.azurerm_storage_account.hpccsa[0].id
-	  subresource_names              = ["file"]
-	  is_manual_connection           = false
-	}
+      name                           = "sa_privateserviceconnection"
+      private_connection_resource_id = data.azurerm_storage_account.hpccsa[0].id
+      subresource_names              = ["file"]
+      is_manual_connection           = false
+    }
   }
 }
 
@@ -154,10 +154,10 @@ resource "kubernetes_secret" "sa_secret" {
   metadata {
     name = "azure-secret"
   }
-  
+
   data = local.has_storage_account ? {
-	azurestorageaccountname = var.storage_account_name
-	azurestorageaccountkey  = data.azurerm_storage_account.hpccsa[0].primary_access_key
+    azurestorageaccountname = var.storage_account_name
+    azurestorageaccountkey  = data.azurerm_storage_account.hpccsa[0].primary_access_key
   } : {}
 
   type = "Opaque"
