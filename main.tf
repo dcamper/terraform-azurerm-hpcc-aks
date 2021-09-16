@@ -121,8 +121,8 @@ module "kubernetes" {
   identity_type       = "UserAssigned" # Allowed values: UserAssigned or SystemAssigned
 
   rbac = {
-    enabled        = false
-    ad_integration = false
+    enabled        = var.enable_rbac_ad
+    ad_integration = var.enable_rbac_ad
   }
 
   network_plugin         = "azure"

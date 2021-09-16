@@ -34,6 +34,16 @@ enable_elk=false
 
 #------------------------------------------------------------------------------
 
+# Enable RBAC and AD integration for AKS?
+# This provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings).
+# Value type: boolean
+# Recommended value: true
+# Example entry: true
+
+enable_rbac_ad=true
+
+#------------------------------------------------------------------------------
+
 # Enable code security?
 # If true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc.
 # Value type: boolean

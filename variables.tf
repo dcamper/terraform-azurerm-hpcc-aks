@@ -53,6 +53,11 @@ variable "enable_elk" {
   type        = bool
 }
 
+variable "enable_rbac_ad" {
+  description = "REQUIRED.  Enable RBAC and AD integration for AKS?\nThis provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings).\nValue type: boolean\nRecommended value: true\nExample entry: true"
+  type        = bool
+}
+
 variable "enable_code_security" {
   description = "REQUIRED.  Enable code security?\nIf true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc.\nExample entry: false"
   type        = bool
