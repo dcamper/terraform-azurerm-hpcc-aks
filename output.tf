@@ -3,5 +3,5 @@ output "advisor_recommendations" {
 }
 
 output "aks_login" {
-  value = "az aks get-credentials --name ${module.kubernetes.name} --resource-group ${module.resource_group.name}"
+  value = "az aks get-credentials --name ${module.kubernetes.name} --resource-group ${module.resource_group.name} --admin"
 }

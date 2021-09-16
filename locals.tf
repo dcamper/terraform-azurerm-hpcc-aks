@@ -104,5 +104,5 @@ locals {
   )
 
   is_windows_os = substr(pathexpand("~"), 0, 1) == "/" ? false : true
-  az_command = try("az aks get-credentials --name ${module.kubernetes.name} --resource-group ${module.resource_group.name} --overwrite", "")
+  az_command = try("az aks get-credentials --name ${module.kubernetes.name} --resource-group ${module.resource_group.name} --overwrite --admin", "")
 }
