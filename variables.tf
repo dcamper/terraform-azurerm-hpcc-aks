@@ -53,6 +53,11 @@ variable "enable_elk" {
   type        = bool
 }
 
+variable "enable_code_security" {
+  description = "REQUIRED.  Enable code security?\nIf true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc.\nExample entry: false"
+  type        = bool
+}
+
 variable "thor_num_workers" {
   type        = number
   description = "REQUIRED.  The number of Thor workers to allocate.\nMust be 1 or more."

@@ -5,6 +5,9 @@
 *.tfstate
 *.tfstate.*
 
+# Test files
+*dantest*
+
 # Crash log files
 crash.log
 

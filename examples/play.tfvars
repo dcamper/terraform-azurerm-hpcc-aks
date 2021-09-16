@@ -34,6 +34,15 @@ enable_elk=false
 
 #------------------------------------------------------------------------------
 
+# Enable code security?
+# If true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc.
+# Value type: boolean
+# Example entry: false
+
+enable_code_security=true
+
+#------------------------------------------------------------------------------
+
 # The number of Thor workers to allocate.
 # Must be 1 or more.
 

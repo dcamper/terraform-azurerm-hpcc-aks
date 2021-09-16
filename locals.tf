@@ -51,14 +51,14 @@ locals {
     namespace      = "default"
     name           = "${local.metadata.product_name}-hpcc"
 
-    values         = [
-      var.enable_roxie ? "./customizations/esp-roxie.yaml" : "./customizations/esp.yaml",
-      "./customizations/eclcc.yaml",
-      "./customizations/thor.yaml",
-      "./customizations/hthor.yaml",
-      var.enable_roxie ? "./customizations/roxie-on.yaml" : "./customizations/roxie-off.yaml",
-      "./customizations/security.yaml"
-    ]
+    values         = concat(
+      [var.enable_roxie ? "./customizations/esp-roxie.yaml" : "./customizations/esp.yaml"],
+      ["./customizations/eclcc.yaml"],
+      ["./customizations/thor.yaml"],
+      ["./customizations/hthor.yaml"],
+      [var.enable_roxie ? "./customizations/roxie-on.yaml" : "./customizations/roxie-off.yaml"],
+      var.enable_code_security ? ["./customizations/security.yaml"] : []
+    )
 
     ecl_watch_port = 8010
     roxie_port     = 8002
