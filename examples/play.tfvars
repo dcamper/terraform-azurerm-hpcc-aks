@@ -134,7 +134,7 @@ azure_region="centralus"
 # The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user.
 # Value type: map of string
 
-admin_ip_cidr_map={"arjuna" = "107.213.192.91/32", "bahar" = "68.23.85.231/32", "tombolo" = "3.84.118.57/32"}
+admin_ip_cidr_map={}
 
 #------------------------------------------------------------------------------
 
@@ -142,7 +142,7 @@ admin_ip_cidr_map={"arjuna" = "107.213.192.91/32", "bahar" = "68.23.85.231/32", 
 # To add no CIDR addresses, enter '[]'.
 # Value type: list of string
 
-hpcc_user_ip_cidr_list=[]
+hpcc_user_ip_cidr_list=["3.84.118.57/32", "68.23.85.231/32", "107.213.192.91/32"]
 
 #------------------------------------------------------------------------------
 
