@@ -6,11 +6,15 @@
 
 product_name="play"
 
+#------------------------------------------------------------------------------
+
 # The version of HPCC Systems to install.
 # Only versions in nn.nn.nn format are supported.
 # Value type: string
 
 hpcc_version="8.2.18"
+
+#------------------------------------------------------------------------------
 
 # Enable ROXIE?
 # This will also expose port 8002 on the cluster.
@@ -19,12 +23,30 @@ hpcc_version="8.2.18"
 
 enable_roxie=false
 
+#------------------------------------------------------------------------------
+
 # Enable ELK (Elasticsearch, Logstash, and Kibana) Stack?
 # This will also expose port 5601 on the cluster.
 # Value type: boolean
 # Example entry: false
 
 enable_elk=false
+
+#------------------------------------------------------------------------------
+
+# The number of Thor workers to allocate.
+# Must be 1 or more.
+
+thor_num_workers=2
+
+#------------------------------------------------------------------------------
+
+# The maximum number of simultaneous Thor jobs allowed.
+# Must be 1 or more.
+
+thor_max_jobs=2
+
+#------------------------------------------------------------------------------
 
 # Map of name => value tags that can will be associated with the cluster.
 # Format is '{"name"="value" [, "name"="value"]*}'.
@@ -34,6 +56,8 @@ enable_elk=false
 
 extra_tags={}
 
+#------------------------------------------------------------------------------
+
 # The VM size for each node in the HPCC Systems node pool.
 # Recommend "Standard_B4ms" or better.
 # See https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general for more information.
@@ -41,11 +65,15 @@ extra_tags={}
 
 node_size="Standard_B4ms"
 
+#------------------------------------------------------------------------------
+
 # The maximum number of VM nodes to allocate for the HPCC Systems node pool.
 # Must be 2 or more.
 # Value type: integer
 
 max_node_count=2
+
+#------------------------------------------------------------------------------
 
 # Email address of the administrator of this HPCC Systems cluster.
 # Value type: string
@@ -53,11 +81,15 @@ max_node_count=2
 
 admin_email="dan.camper@lexisnexisrisk.com"
 
+#------------------------------------------------------------------------------
+
 # Name of the administrator of this HPCC Systems cluster.
 # Value type: string
 # Example entry: "Jane Doe"
 
 admin_name="Dan S. Camper"
+
+#------------------------------------------------------------------------------
 
 # Username of the administrator of this HPCC Systems cluster.
 # Value type: string
@@ -65,12 +97,16 @@ admin_name="Dan S. Camper"
 
 admin_username="dcamper"
 
+#------------------------------------------------------------------------------
+
 # The Azure region abbreviation in which to create these resources.
 # Must be one of ["eastus2", "centralus"].
 # Value type: string
 # Example entry: "eastus2"
 
 azure_region="centralus"
+
+#------------------------------------------------------------------------------
 
 # Map of name => CIDR IP addresses that can administrate this AKS.
 # Format is '{"name"="cidr" [, "name"="cidr"]*}'.
@@ -81,11 +117,15 @@ azure_region="centralus"
 
 admin_ip_cidr_map={"arjuna" = "107.213.192.91/32", "bahar" = "68.23.85.231/32", "tombolo" = "3.84.118.57/32"}
 
+#------------------------------------------------------------------------------
+
 # List of additional CIDR addresses that can access this HPCC Systems cluster.
 # To add no CIDR addresses, enter '[]'.
 # Value type: list of string
 
 hpcc_user_ip_cidr_list=[]
+
+#------------------------------------------------------------------------------
 
 # If you are attaching to an existing storage account, put its name here.
 # Leave as an empty string if you do not have a storage account.
@@ -94,6 +134,8 @@ hpcc_user_ip_cidr_list=[]
 # Example entry: "my-product-sa"
 
 storage_account_name=""
+
+#------------------------------------------------------------------------------
 
 # If you are attaching to an existing storage account, put its resource group name here.
 # Leave as an empty string if you do not have a storage account.

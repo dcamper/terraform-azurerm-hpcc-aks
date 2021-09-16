@@ -53,6 +53,24 @@ variable "enable_elk" {
   type        = bool
 }
 
+variable "thor_num_workers" {
+  type        = number
+  description = "REQUIRED.  The number of Thor workers to allocate.\nMust be 1 or more."
+  validation {
+    condition     = var.thor_num_workers >= 1
+    error_message = "Value must be 1 or more."
+  }
+}
+
+variable "thor_max_jobs" {
+  type        = number
+  description = "REQUIRED.  The maximum number of simultaneous Thor jobs allowed.\nMust be 1 or more."
+  validation {
+    condition     = var.thor_max_jobs >= 1
+    error_message = "Value must be 1 or more."
+  }
+}
+
 variable "extra_tags" {
   description = "REQUIRED.  Map of name => value tags that can will be associated with the cluster.\nFormat is '{\"name\"=\"value\" [, \"name\"=\"value\"]*}'.\nThe 'name' portion must be unique.\nTo add no tags, enter '{}'."
   type        = map(string)

@@ -181,8 +181,9 @@ resource "helm_release" "hpcc" {
   lint                       = try(local.hpcc.lint, null)
 
   values = concat(
-                   local.has_storage_account ? [] : [file("${path.root}/customizations/storage-pvc.yaml")],
-                   try([for v in local.hpcc.values : file(v)], [])
+    local.has_storage_account ? [] : [file("${path.root}/customizations/storage-pvc.yaml")],
+    try([for v in local.hpcc.values : file(v)], []),
+    [yamlencode(local.hpcc.chart_values)]
   )
 
   depends_on = [helm_release.storage, module.kubernetes]

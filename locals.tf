@@ -63,6 +63,18 @@ locals {
     ecl_watch_port = 8010
     roxie_port     = 8002
     elk_port       = 5601
+    
+    chart_values = {
+      thor = [
+		{
+		  name       = "thor"
+		  prefix     = "thor"
+		  numWorkers = var.thor_num_workers
+		  maxJobs    = var.thor_max_jobs
+		  maxGraphs  = 2
+		}
+	  ]
+    }
   }
 
   elk = {
