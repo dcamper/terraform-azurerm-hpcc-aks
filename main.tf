@@ -40,7 +40,7 @@ module "metadata" {
 module "resource_group" {
   source = "github.com/Azure-Terraform/terraform-azurerm-resource-group.git?ref=v2.0.0"
 
-  unique_name = true
+  unique_name = false
   location    = var.azure_region
   names       = local.names
   tags        = local.tags
