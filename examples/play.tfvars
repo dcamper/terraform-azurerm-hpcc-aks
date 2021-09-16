@@ -12,7 +12,7 @@ product_name="play"
 # Only versions in nn.nn.nn format are supported.
 # Value type: string
 
-hpcc_version="8.2.18"
+hpcc_version="8.2.20"
 
 #------------------------------------------------------------------------------
 
