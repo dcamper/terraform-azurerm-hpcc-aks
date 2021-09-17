@@ -19,7 +19,7 @@ locals {
     "owner" = var.admin_name
     "owner_email" = var.admin_email
   }
-  tags = merge(module.metadata.tags, try(var.extra_tags, local.enforced_tags))
+  tags = merge(module.metadata.tags, local.enforced_tags, try(var.extra_tags, {}))
 
   aks_cluster_name = "${local.names.resource_group_type}-${local.names.product_name}-terraform-${local.names.location}-${var.admin_username}-${terraform.workspace}"
 
