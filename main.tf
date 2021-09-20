@@ -91,25 +91,6 @@ module "virtual_network" {
   }
 }
 
-resource "azurerm_private_endpoint" "pe" {
-  count = local.has_storage_account ? 1 : 0
-
-  name                = "sa_endpoint"
-  location            = var.azure_region
-  resource_group_name = module.resource_group.name
-  subnet_id           = module.virtual_network.subnets["iaas-public"].id
-
-  dynamic "private_service_connection" {
-    for_each = local.has_storage_account ? [1] : []
-    content {
-      name                           = "sa_privateserviceconnection"
-      private_connection_resource_id = data.azurerm_storage_account.hpccsa[0].id
-      subresource_names              = ["file"]
-      is_manual_connection           = false
-    }
-  }
-}
-
 module "kubernetes" {
   source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.1"
 
@@ -181,7 +162,7 @@ resource "helm_release" "hpcc" {
   lint                       = try(local.hpcc.lint, null)
 
   values = concat(
-    local.has_storage_account ? [] : [file("${path.root}/customizations/storage-pvc.yaml")],
+    local.has_storage_account ? [file("${path.root}/customizations/storage-sa2.yaml")] : [file("${path.root}/customizations/storage-pvc.yaml")],
     try([for v in local.hpcc.values : file(v)], []),
     [yamlencode(local.hpcc.chart_values)]
   )
@@ -212,10 +193,7 @@ resource "helm_release" "storage" {
   count = local.has_storage_account ? 1 : 0
   name                       = "azstorage"
   chart                      = local.storage_chart
-  values                     = concat(
-    [file("${path.root}/customizations/storage-pvc.yaml")],
-    [file("${path.root}/customizations/storage-sa.yaml")]
-  )
+  values                     = [file("${path.root}/customizations/storage-sa1.yaml")]
   create_namespace           = true
   namespace                  = try(local.hpcc.namespace, terraform.workspace)
   atomic                     = null
@@ -227,58 +205,6 @@ resource "helm_release" "storage" {
   timeout                    = 600
   wait_for_jobs              = null
   lint                       = null
-}
-
-resource "azurerm_public_ip" "public_ip" {
-  count = local.has_storage_account ? 1 : 0
-
-  name                = "private_link_public_ip"
-  sku                 = "Standard"
-  location            = module.resource_group.location
-  resource_group_name = module.resource_group.name
-  allocation_method   = "Static"
-}
-
-resource "azurerm_lb" "private_link_lb" {
-  count = local.has_storage_account ? 1 : 0
-
-  name                = "private_link_lb"
-  sku                 = "Standard"
-  location            = module.resource_group.location
-  resource_group_name = module.resource_group.name
-
-  frontend_ip_configuration {
-    name                 = azurerm_public_ip.public_ip[0].name
-    public_ip_address_id = azurerm_public_ip.public_ip[0].id
-  }
-}
-
-resource "azurerm_private_link_service" "private_link_svc" {
-  count = local.has_storage_account ? 1 : 0
-
-  name                = "sa_privatelink"
-  resource_group_name = module.resource_group.name
-  location            = module.resource_group.location
-
-  auto_approval_subscription_ids              = [data.azurerm_subscription.current.subscription_id]
-  visibility_subscription_ids                 = [data.azurerm_subscription.current.subscription_id]
-  load_balancer_frontend_ip_configuration_ids = [azurerm_lb.private_link_lb[0].frontend_ip_configuration.0.id]
-
-  nat_ip_configuration {
-    name                       = "primary"
-    private_ip_address         = "10.1.1.17"
-    private_ip_address_version = "IPv4"
-    subnet_id                  = module.virtual_network.subnets["iaas-public"].id
-    primary                    = true
-  }
-
-  nat_ip_configuration {
-    name                       = "secondary"
-    private_ip_address         = "10.1.1.18"
-    private_ip_address_version = "IPv4"
-    subnet_id                  = module.virtual_network.subnets["iaas-public"].id
-    primary                    = false
-  }
 }
 
 resource "azurerm_network_security_rule" "ingress_internet_admin" {
