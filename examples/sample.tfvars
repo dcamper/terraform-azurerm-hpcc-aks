@@ -4,7 +4,7 @@
 # Value type: string
 # Example entry: "my-product"
 
-product_name="play"
+product_name="sample"
 
 #------------------------------------------------------------------------------
 
@@ -112,7 +112,7 @@ max_node_count=2
 # Value type: string
 # Example entry: "jane.doe@hpccsystems.com"
 
-admin_email="dan.camper@lexisnexisrisk.com"
+admin_email="jane.doe@hpccsystems.com"
 
 #------------------------------------------------------------------------------
 
@@ -120,7 +120,7 @@ admin_email="dan.camper@lexisnexisrisk.com"
 # Value type: string
 # Example entry: "Jane Doe"
 
-admin_name="Dan S. Camper"
+admin_name="Jane Doe"
 
 #------------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ admin_name="Dan S. Camper"
 # Value type: string
 # Example entry: "jdoe"
 
-admin_username="dcamper"
+admin_username="jdoe"
 
 #------------------------------------------------------------------------------
 
@@ -156,7 +156,7 @@ admin_ip_cidr_map={}
 # To add no CIDR addresses, enter '[]'.
 # Value type: list of string
 
-hpcc_user_ip_cidr_list=["3.84.118.57/32", "68.23.85.231/32", "107.213.192.91/32"]
+hpcc_user_ip_cidr_list=[]
 
 #------------------------------------------------------------------------------
 
