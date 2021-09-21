@@ -20,7 +20,7 @@ The HPCC Systems cluster this module creates uses ephemeral storage (meaning, th
 1. Issue `terraform init` to initialize the Terraform modules.
 1. Decide how you want to supply option values to the module during invocation.  There are two possibilities (and we recommend the second option):
 	1. Invoke the `terraform apply` command and enter values for each option as Terraform prompts for it, then enter `yes` at the final prompt to begin building the cluster.
-	1. Create a `terraform.tfvars` file containing the values for each option, invoke `terraform apply`, then enter `yes` at the final prompt to begin building the cluster.  A sample file can be found at [examples/sample.tfvars](examples/sample.tfvars) -- you can copy it and simply make modifications.
+	1. Create a `terraform.tfvars` file containing the values for each option, invoke `terraform apply`, then enter `yes` at the final prompt to begin building the cluster.  The easiest way to do that is to copy the sample file at [examples/sample.tfvars](examples/sample.tfvars) and name it `terraform.tfvars`.
 1. After the Kubernetes cluster is deployed, your local `kubectl` tool can be used to interact with it.  At some point during the deployment `kubectl` will acquire the login credentials for the cluster and it will be the current context (so any `kubectl` commands you enter will be directed to that cluster by default).
 
 ## Available Options
@@ -35,21 +35,21 @@ The following options should be set in your `terraform.tfvars` file:
 | `enable_elk` | Enable ELK (Elasticsearch, Logstash, and Kibana) Stack? This will also expose port 5601 on the cluster. Value type: boolean. |
 | `enable_rbac_ad` | Enable RBAC and AD integration for AKS? This provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings). Value type: boolean. Recommended value: true |
 | `enable_code_security` | Enable code security? If true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc. Value type: boolean. |
-| `thor_num_workers ` | The number of Thor workers to allocate. Must be 1 or more. Value type: number. |
-| `thor_max_jobs ` | The maximum number of simultaneous Thor jobs allowed. Must be 1 or more. Value type: number. |
-| `storage_lz_gb ` | The amount of storage reserved for the landing zone in gigabytes. Must be 1 or more.  Value type: number. |
-| `storage_data_gb ` | The amount of storage reserved for data in gigabytes. Must be 1 or more.  Value type: number. |
-| `extra_tags ` | Map of name => value tags that can will be associated with the cluster. Format is `{"name"="value" [, "name"="value"]*}`. The `name` portion must be unique. To add no tags, use `{}`. Value type: map of string. |
-| `node_size ` | The VM size for each node in the HPCC Systems node pool. Recommend "Standard\_B4ms" or better. See [https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general) for more information. Value type: string. |
-| `max_node_count ` | The maximum number of VM nodes to allocate for the HPCC Systems node pool. Must be 2 or more. Value type: number.|
-| `admin_email ` | Email address of the administrator of this HPCC Systems cluster. Value type: string. |
-| `admin_name ` | Name of the administrator of this HPCC Systems cluster. Value type: string. |
-| `admin_username ` | Username of the administrator of this HPCC Systems cluster. Value type: string. |
-| `azure_region ` | The Azure region abbreviation in which to create these resources. Must be one of ["eastus2", "centralus"]. Value type: string. |
-| `admin_ip_cidr_map ` | Map of name => CIDR IP addresses that can administrate this AKS. Format is `{"name"="cidr" [, "name"="cidr"]*}`. The `name` portion must be unique. To add no CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user. Value type: map of string. |
-| `hpcc_user_ip_cidr_list ` | List of additional CIDR addresses that can access this HPCC Systems cluster. To add no CIDR addresses, enter `[]`. Value type: list of string. |
-| `storage_account_name ` | If you are attaching to an existing storage account, put its name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a resource group for the storage account. Value type: string. |
-| `storage_account_resource_group_name ` | If you are attaching to an existing storage account, put its resource group name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a name for the storage account. Value type: string. |
+| `thor_num_workers` | The number of Thor workers to allocate. Must be 1 or more. Value type: number. |
+| `thor_max_jobs` | The maximum number of simultaneous Thor jobs allowed. Must be 1 or more. Value type: number. |
+| `storage_lz_gb` | The amount of storage reserved for the landing zone in gigabytes. Must be 1 or more.  Value type: number. |
+| `storage_data_gb` | The amount of storage reserved for data in gigabytes. Must be 1 or more.  Value type: number. |
+| `extra_tags` | Map of name => value tags that can will be associated with the cluster. Format is `{"name"="value" [, "name"="value"]*}`. The `name` portion must be unique. To add no tags, use `{}`. Value type: map of string. |
+| `node_size` | The VM size for each node in the HPCC Systems node pool. Recommend "Standard\_B4ms" or better. See [https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general) for more information. Value type: string. |
+| `max_node_count` | The maximum number of VM nodes to allocate for the HPCC Systems node pool. Must be 2 or more. Value type: number.|
+| `admin_email` | Email address of the administrator of this HPCC Systems cluster. Value type: string. |
+| `admin_name` | Name of the administrator of this HPCC Systems cluster. Value type: string. |
+| `admin_username` | Username of the administrator of this HPCC Systems cluster. Value type: string. |
+| `azure_region` | The Azure region abbreviation in which to create these resources. Must be one of ["eastus2", "centralus"]. Value type: string. |
+| `admin_ip_cidr_map` | Map of name => CIDR IP addresses that can administrate this AKS. Format is `{"name"="cidr" [, "name"="cidr"]*}`. The `name` portion must be unique. To add no CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user. Value type: map of string. |
+| `hpcc_user_ip_cidr_list` | List of additional CIDR addresses that can access this HPCC Systems cluster. To add no CIDR addresses, enter `[]`. Value type: list of string. |
+| `storage_account_name` | If you are attaching to an existing storage account, put its name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a resource group for the storage account. Value type: string. |
+| `storage_account_resource_group_name` | If you are attaching to an existing storage account, put its resource group name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a name for the storage account. Value type: string. |
 
 ## Recommendations
 
@@ -72,6 +72,7 @@ The following options should be set in your `terraform.tfvars` file:
 		* Make \<ContextName\> context the current context for future kubectl commands.
 	* `kubectl config unset contexts.<ContextName>`
 		* Delete context named \<ContextName\>.
+		* Note that when you delete the current context, kubectl does not select another context as the current context.  Instead, no context will be current.  You must use `kubectl config use-context <ContextName>` to make another context current.
 	* `kubectl get services | grep eclwatch | awk '{match($5,/[0-9]+/); print "ECL Watch: " $4 ":" substr($5, RSTART, RLENGTH)}'`
 		* Echos the URL for ECL Watch for a just-deployed cluster.  This assumes that everything is running well.
 * Note that `terraform destroy` does not delete the kubectl context.  You need to use `kubectl config unset contexts.<ContextName>` to get rid of the context from your local system.
