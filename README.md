@@ -2,6 +2,8 @@
 
 This is a slightly-opinionated Terraform module for deploying an HPCC Systems cluster on Azure.  The goal is to provide a simple method for deploying a cluster from scratch, with only the most important options to consider.
 
+The HPCC Systems cluster this module creates uses ephemeral storage (meaning, the storage will be deleted if the cluster is deleted) unless a predefined storage account is cited.  See the `storage_account_name` and `storage_account_resource_group_name` options below.
+
 ## Requirements
 
 * This is a Terraform module, so you need to have Terraform installed on your system.  Instructions for downloading and installing Terraform can be found at [https://www.terraform.io/downloads.html](https://www.terraform.io/downloads.html).
@@ -65,14 +67,14 @@ The following options should be set in your `terraform.tfvars` file:
 	* `kubectl get services`
 		* Show the current services running on the pods on the current cluster.
 	* `kubectl config get-contexts`
-		* Show the saved kubectl contexts.
+		* Show the saved kubectl contexts.  A context contains login and reference information for a remote Kubernetes cluster.  A kubectl command typically relays information about the current context.
 	* `kubectl config use-context <ContextName>`
 		* Make \<ContextName\> context the current context for future kubectl commands.
 	* `kubectl config unset contexts.<ContextName>`
 		* Delete context named \<ContextName\>.
 	* `kubectl get services | grep eclwatch | awk '{match($5,/[0-9]+/); print "ECL Watch: " $4 ":" substr($5, RSTART, RLENGTH)}'`
-		* Echo the URL for ECL Watch for a just-deployed cluster.
-* Note that `terraform destroy` does not delete the kubectl context.  You need to use the `kubectl config unset contexts.<ContextName>` to get rid of the context from your local system.
+		* Echos the URL for ECL Watch for a just-deployed cluster.  This assumes that everything is running well.
+* Note that `terraform destroy` does not delete the kubectl context.  You need to use `kubectl config unset contexts.<ContextName>` to get rid of the context from your local system.
 * If a deployment fails and you want to start over, you have two options:
 	* Immediately issue a `terraform destroy` command and let Terraform clean up.
 	* Clean up the resources by hand:
