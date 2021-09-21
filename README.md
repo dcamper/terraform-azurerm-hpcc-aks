@@ -18,9 +18,9 @@ The HPCC Systems cluster this module creates uses ephemeral storage (meaning, th
 	* From the command line, this is usually accomplished with the `az login` command.
 1. Clone this repo to your local system.
 1. Issue `terraform init` to initialize the Terraform modules.
-1. Decide how you want to supply option values to the module during invocation.  There are two possibilities (and we recommend the second option):
+1. Decide how you want to supply option values to the module during invocation.  There are two possibilities:
 	1. Invoke the `terraform apply` command and enter values for each option as Terraform prompts for it, then enter `yes` at the final prompt to begin building the cluster.
-	1. Create a `terraform.tfvars` file containing the values for each option, invoke `terraform apply`, then enter `yes` at the final prompt to begin building the cluster.  The easiest way to do that is to copy the sample file at [examples/sample.tfvars](examples/sample.tfvars) and name it `terraform.tfvars`.
+	1. **Recommended:**  Create a `terraform.tfvars` file containing the values for each option, invoke `terraform apply`, then enter `yes` at the final prompt to begin building the cluster.  The easiest way to create that initial file is to copy the sample at [examples/sample.tfvars](examples/sample.tfvars) and name it `terraform.tfvars`.
 1. After the Kubernetes cluster is deployed, your local `kubectl` tool can be used to interact with it.  At some point during the deployment `kubectl` will acquire the login credentials for the cluster and it will be the current context (so any `kubectl` commands you enter will be directed to that cluster by default).
 
 ## Available Options
