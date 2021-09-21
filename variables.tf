@@ -81,6 +81,24 @@ variable "thor_max_jobs" {
   }
 }
 
+variable "storage_lz_gb" {
+  type        = number
+  description = "REQUIRED.  The amount of storage reserved for the landing zone in gigabytes.\nMust be 1 or more"
+  validation {
+    condition     = var.storage_lz_gb >= 1
+    error_message = "Value must be 1 or more."
+  }
+}
+
+variable "storage_data_gb" {
+  type        = number
+  description = "REQUIRED.  The amount of storage reserved for data in gigabytes.\nMust be 10 or more"
+  validation {
+    condition     = var.storage_data_gb >= 10
+    error_message = "Value must be 1 or more."
+  }
+}
+
 variable "extra_tags" {
   description = "REQUIRED.  Map of name => value tags that can will be associated with the cluster.\nFormat is '{\"name\"=\"value\" [, \"name\"=\"value\"]*}'.\nThe 'name' portion must be unique.\nTo add no tags, enter '{}'."
   type        = map(string)

@@ -162,7 +162,7 @@ resource "helm_release" "hpcc" {
   lint                       = try(local.hpcc.lint, null)
 
   values = concat(
-    local.has_storage_account ? [file("${path.root}/customizations/storage-sa2.yaml")] : [file("${path.root}/customizations/storage-pvc.yaml")],
+    local.has_storage_account ? [yamlencode(local.hpcc.storage_sa2)] : [yamlencode(local.hpcc.storage_pvc)],
     try([for v in local.hpcc.values : file(v)], []),
     [yamlencode(local.hpcc.chart_values)]
   )
@@ -193,7 +193,7 @@ resource "helm_release" "storage" {
   count = local.has_storage_account ? 1 : 0
   name                       = "azstorage"
   chart                      = local.storage_chart
-  values                     = [file("${path.root}/customizations/storage-sa1.yaml")]
+  values                     = [yamlencode(local.hpcc.storage_sa1)]
   create_namespace           = true
   namespace                  = try(local.hpcc.namespace, terraform.workspace)
   atomic                     = null

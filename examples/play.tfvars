@@ -67,6 +67,20 @@ thor_max_jobs=2
 
 #------------------------------------------------------------------------------
 
+# The amount of storage reserved for the landing zone in gigabytes.
+# Must be 1 or more.
+
+storage_lz_gb=25
+
+#------------------------------------------------------------------------------
+
+# The amount of storage reserved for data in gigabytes.
+# Must be 1 or more.
+
+storage_data_gb=100
+
+#------------------------------------------------------------------------------
+
 # Map of name => value tags that can will be associated with the cluster.
 # Format is '{"name"="value" [, "name"="value"]*}'.
 # The 'name' portion must be unique.

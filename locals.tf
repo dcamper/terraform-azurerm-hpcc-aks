@@ -46,6 +46,14 @@ locals {
   storage_chart = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
   elk_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/elastic4hpcclogs-1.0.0.tgz"
 
+  storage_size = {
+      dali   = "10Gi"
+      dll    = "4Gi"
+      sasha  = "2Gi"
+      data   = "${var.storage_data_gb}Gi"
+      lz     = "${var.storage_lz_gb}Gi"
+  }
+
   hpcc = {
     version        = var.hpcc_version
     namespace      = "default"
@@ -63,17 +71,166 @@ locals {
     ecl_watch_port = 8010
     roxie_port     = 8002
     elk_port       = 5601
-    
+
     chart_values = {
       thor = [
-		{
-		  name       = "thor"
-		  prefix     = "thor"
-		  numWorkers = var.thor_num_workers
-		  maxJobs    = var.thor_max_jobs
-		  maxGraphs  = 2
-		}
-	  ]
+        {
+          name       = "thor"
+          prefix     = "thor"
+          numWorkers = var.thor_num_workers
+          maxJobs    = var.thor_max_jobs
+          maxGraphs  = 2
+        }
+      ]
+    }
+
+    storage_pvc = {
+      storage = {
+        planes = [
+          {
+            name         = "dali"
+            storageSize  = local.storage_size["dali"]
+            storageClass = "azurefile"
+            prefix       = "/var/lib/HPCCSystems/dalistorage"
+            category     = "dali"
+          },
+          {
+            name         = "dll"
+            storageSize  = local.storage_size["dll"]
+            storageClass = "azurefile"
+            prefix       = "/var/lib/HPCCSystems/queries"
+            category     = "dll"
+          },
+          {
+            name         = "sasha"
+            storageSize  = local.storage_size["sasha"]
+            storageClass = "azurefile"
+            prefix       = "/var/lib/HPCCSystems/sashastorage"
+            category     = "sasha"
+          },
+          {
+            name         = "data"
+            storageSize  = local.storage_size["data"]
+            storageClass = "azurefile"
+            prefix       = "/var/lib/HPCCSystems/hpcc-data"
+            category     = "data"
+          },
+          {
+            name         = "mydropzone"
+            storageSize  = local.storage_size["lz"]
+            storageClass = "azurefile"
+            prefix       = "/var/lib/HPCCSystems/mydropzone"
+            category     = "lz"
+          }
+        ]
+      },
+      sasha = {
+        wu-archiver = {
+          plane = "sasha"
+        },
+        dfuwu-archiver = {
+          plane = "sasha"
+        }
+      }
+    }
+
+    storage_sa1 = {
+      common = {
+        mountPrefix     = "/var/lib/HPCCSystems"
+        secretName      = "azure-secret"
+        secretNamespace = "default"
+      },
+      planes = [
+        {
+          name      = "dali"
+          subPath   = "dalistorage"
+          size      = local.storage_size["dali"]
+          category  = "dali"
+          sku       = "Standard_LRS"
+          shareName = "dalishare"
+        },
+        {
+          name      = "dll"
+          subPath   = "queries"
+          size      = local.storage_size["dll"]
+          category  = "dll"
+          rwmany    = true
+          sku       = "Standard_LRS"
+          shareName = "dllsshare"
+        },
+        {
+          name      = "sasha"
+          subPath   = "sasha"
+          size      = local.storage_size["sasha"]
+          rwmany    = true
+          category  = "sasha"
+          sku       = "Standard_LRS"
+          shareName = "sashashare"
+        },
+        {
+          name      = "data"
+          subPath   = "hpcc-data"
+          size      = local.storage_size["data"]
+          category  = "data"
+          rwmany    = true
+          sku       = "Standard_LRS"
+          shareName = "datashare"
+        },
+        {
+          name      = "mydropzone"
+          subPath   = "dropzone"
+          size      = local.storage_size["lz"]
+          rwmany    = true
+          category  = "lz"
+          sku       = "Standard_LRS"
+          shareName = "lzshare"
+        }
+      ]
+    }
+
+    storage_sa2 = {
+      storage = {
+        planes = [
+          {
+            name         = "dali"
+            pvc          = "dali-azstorage-hpcc-azurefile-pvc"
+            prefix       = "/var/lib/HPCCSystems/dalistorage"
+            category     = "dali"
+          },
+          {
+            name         = "dll"
+            pvc          = "dll-azstorage-hpcc-azurefile-pvc"
+            prefix       = "/var/lib/HPCCSystems/queries"
+            category     = "dll"
+          },
+          {
+            name         = "sasha"
+            pvc          = "sasha-azstorage-hpcc-azurefile-pvc"
+            prefix       = "/var/lib/HPCCSystems/sashastorage"
+            category     = "sasha"
+          },
+          {
+            name         = "data"
+            pvc          = "data-azstorage-hpcc-azurefile-pvc"
+            prefix       = "/var/lib/HPCCSystems/hpcc-data"
+            category     = "data"
+          },
+          {
+            name         = "mydropzone"
+            pvc          = "mydropzone-azstorage-hpcc-azurefile-pvc"
+            prefix       = "/var/lib/HPCCSystems/mydropzone"
+            category     = "lz"
+          }
+        ]
+      },
+      sasha = {
+        wu-archiver = {
+          plane = "sasha"
+        },
+        dfuwu-archiver = {
+          plane = "sasha"
+        }
+      }
     }
   }
 
