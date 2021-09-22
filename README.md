@@ -97,6 +97,6 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 				* `app-dantest-sandbox-eastus2`
 				* `MC_app-dantest-terraform-eastus2-dcamper-default`
 			* The first one contains the Kubernetes service that created the second one (services that support Kubernetes).  So, if you delete only the first resource group, the second resource group will be deleted automatically.
-		* Delete all Terraform state files using `rm *.tfstate`
+		* Delete all Terraform state files using `rm *.tfstate*`
 	* Then, of course, fix whatever caused the deployment to fail.
 * If want to completely reset Terraform, issue `rm -rf .terraform* *.tfstate*` and then `terraform init`.
