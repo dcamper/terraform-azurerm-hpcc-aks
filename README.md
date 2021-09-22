@@ -14,6 +14,8 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 
 * To work with Azure, you will need to install the Azure Command Line tools.  Instructions can be found at [https://docs.microsoft.com/en-us/cli/azure/install-azure-cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
 
+* This module will create an AKS cluster in your current default Azure subscription.  You can view your current subscriptions, and determine which is the default, using the `az account list --output table` command.  To set a default subscription, use `az account set --subscription "My Subscription"`.
+
 ## Installing/Using This Module
 
 1. If necessary, login to Azure.
