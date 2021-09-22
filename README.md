@@ -41,8 +41,12 @@ Three items are shown at the end of a successful deployment:
 Options have data types.  The ones used in this module are:
 * string
 	* Typical string enclosed by quotes
+	* Example
+		* `"value"`
 * number
 	* Integer number; do not quote
+	* Example
+		* `1234`
 * map of string
 	* List of key/value pairs, delimited by commas
 	* Both key and value should be a quote string
