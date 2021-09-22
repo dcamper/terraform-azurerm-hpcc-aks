@@ -66,7 +66,7 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 
 ## Recommendations
 
-* Do create a `terraform.tfvars` file.  Terraform automatically uses it for `terraform apply` and `terraform plan` commands.  If you don't name it exactly that name, you can supply the filename with a `-var-file` option but you will have to remember to always site that file for the future (if you want to update the cluster, or destroy it).  It is easier to just let Terraform find the file.
+* Do create a `terraform.tfvars` file.  Terraform automatically uses it for `terraform apply` and `terraform plan` commands.  If you don't name it exactly that name, you can supply the filename with a `-var-file` option but you will have to remember to always cite that file for the future (if you want to update the cluster, or destroy it).  It is easier to just let Terraform find the file.
 	* If you don't create a .tfvars file at all and just let Terraform prompt you for the options, then updating or destroying an existing cluster will be *much* more difficult (you will have to reenter everything).
 * Do not use the same repo clone for different concurrent deployments.
 	* Terraform creates state files (*.tfstate) that represent what thinks reality is.  If you try to manage multiple clusters, Terraform will get confused.
