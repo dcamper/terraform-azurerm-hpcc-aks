@@ -24,7 +24,7 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 1. Issue `terraform init` to initialize the Terraform modules.
 1. Decide how you want to supply option values to the module during invocation.  There are two possibilities:
 	1. Invoke the `terraform apply` command and enter values for each option as Terraform prompts for it, then enter `yes` at the final prompt to begin building the cluster.
-	1. **Recommended:**  Create a `terraform.tfvars` file containing the values for each option, invoke `terraform apply`, then enter `yes` at the final prompt to begin building the cluster.  The easiest way to do that is to edit the sample file:
+	1. **Recommended:**  Create a `terraform.tfvars` file containing the values for each option, invoke `terraform apply`, then enter `yes` at the final prompt to begin building the cluster.  The easiest way to do that is to copy the sample file and then edit the copy:
 		* `cp examples/sample.tfvars terraform.tfvars`
 1. After the Kubernetes cluster is deployed, your local `kubectl` tool can be used to interact with it.  At some point during the deployment `kubectl` will acquire the login credentials for the cluster and it will be the current context (so any `kubectl` commands you enter will be directed to that cluster by default).
 
@@ -47,6 +47,8 @@ Options have data types.  The ones used in this module are:
 	* Integer number; do not quote
 	* Example
 		* `1234`
+* boolean
+	* true or false (not quoted)
 * map of string
 	* List of key/value pairs, delimited by commas
 	* Both key and value should be a quote string
