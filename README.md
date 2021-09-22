@@ -38,6 +38,26 @@ Three items are shown at the end of a successful deployment:
 
 ## Available Options
 
+Options have data types.  The ones used in this module are:
+* string
+	* Typical string enclosed by quotes
+* number
+	* Integer number; do not quote
+* map of string
+	* List of key/value pairs, delimited by commas
+	* Both key and value should be a quote string
+	* Entire map is enclosed by braces
+	* Example with two key/value pairs
+		* `{"key1" = "value1", "key2" = "value2"}`
+	* Empty value is `{}`
+* list of string
+	* List of values, delimited by commas
+	* A value is a quoted string
+	* Entire list is enclosed in brackets
+	* Example with two values
+		* `["value1", "value2"]`
+	* Empty value is `[]`
+
 The following options should be set in your `terraform.tfvars` file (or entered interactively, if you choose to not create a file):
 
 |Option|Type|Description|
