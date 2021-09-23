@@ -13,6 +13,8 @@ locals {
 
   names = module.metadata.names
 
+  #----------------------------------------------------------------------------
+
   enforced_tags = {
     "admin" = var.admin_name
     "email" = var.admin_email
@@ -21,7 +23,11 @@ locals {
   }
   tags = merge(module.metadata.tags, local.enforced_tags, try(var.extra_tags, {}))
 
+  #----------------------------------------------------------------------------
+
   aks_cluster_name = "${local.names.resource_group_type}-${local.names.product_name}-terraform-${local.names.location}-${var.admin_username}-${terraform.workspace}"
+
+  #----------------------------------------------------------------------------
 
   node_pools = {
     system = {
@@ -40,11 +46,9 @@ locals {
     }
   }
 
-  has_storage_account = try(var.storage_account_name, "") != "" && try(var.storage_account_resource_group_name, "") != ""
+  #----------------------------------------------------------------------------
 
-  hpcc_chart    = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-${var.hpcc_version}.tgz"
-  storage_chart = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
-  elk_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/elastic4hpcclogs-1.0.0.tgz"
+  has_storage_account = try(var.storage_account_name, "") != "" && try(var.storage_account_resource_group_name, "") != ""
 
   storage_size = {
       dali   = "10Gi"
@@ -53,6 +57,14 @@ locals {
       data   = "${var.storage_data_gb}Gi"
       lz     = "${var.storage_lz_gb}Gi"
   }
+
+  #----------------------------------------------------------------------------
+
+  hpcc_chart    = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-${var.hpcc_version}.tgz"
+  storage_chart = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
+  elk_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/elastic4hpcclogs-1.0.0.tgz"
+
+  #----------------------------------------------------------------------------
 
   hpcc = {
     version        = var.hpcc_version
@@ -234,31 +246,56 @@ locals {
     }
   }
 
+  #----------------------------------------------------------------------------
+
   elk = {
     name   = "${local.metadata.product_name}-elk"
   }
 
+  #----------------------------------------------------------------------------
+
+  # Corporate networks to automatically include in AKS admin and HPCC user access
   default_admin_ip_cidr_maps = {
     "alpharetta" = "66.241.32.0/19"
     "boca"       = "209.243.48.0/20"
   }
 
-  host_ip_cidr    = "${chomp(data.http.host_ip.body)}/32"
-  # Each value can have any kind of CIDR range
-  access_map_cidr = merge(local.default_admin_ip_cidr_maps, try(var.admin_ip_cidr_map), { "host_ip" = local.host_ip_cidr })
-  # Remove /31 and /32 CIDR ranges (some TF modules don't like them)
-  access_map_bare = zipmap(
-    keys(local.access_map_cidr),
-    [for s in values(local.access_map_cidr) : replace(s, "/\\/3[12]$/", "")]
+  # CIDR address of user running Terraform
+  host_ip         = "${chomp(data.http.host_ip.body)}"
+  host_ip_cidr    = "${local.host_ip}/32"
+
+  # Check to see if user's IP address is in a default admin CIDR
+  admin_overlap_test = [
+    for s in values(local.default_admin_ip_cidr_maps)
+      : cidrsubnet("${local.host_ip}/${regex("/(\\d{1,2})$", s)[0]}", 0, 0) == s
+  ]
+  admin_overlaps = anytrue(local.admin_overlap_test)
+
+  # List of all CIDR addresses that can admin AKS
+  admin_cidr_map = merge(
+    local.default_admin_ip_cidr_maps,
+    try(var.admin_ip_cidr_map, {}),
+    local.admin_overlaps ? {} : { "host_ip" = local.host_ip_cidr }
   )
-  # Rewrite HPCC user access CIDR addresses, removing /31 and /32
+
+  # Remove /31 and /32 CIDR suffixes from AKS admin list (some TF modules don't like them)
+  admin_cidr_map_bare = zipmap(
+    keys(local.admin_cidr_map),
+    [for s in values(local.admin_cidr_map) : replace(s, "/\\/3[12]$/", "")]
+  )
+
+  # Remove /31 and /32 CIDR suffixes from HPCC user access list
   hpcc_user_ip_cidr_list = [for s in var.hpcc_user_ip_cidr_list : replace(s, "/\\/3[12]$/", "")]
+
+  #----------------------------------------------------------------------------
 
   exposed_ports = concat(
     [tostring(local.hpcc.ecl_watch_port)],
     var.enable_elk ? [tostring(local.hpcc.elk_port)] : [],
     var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
   )
+
+  #----------------------------------------------------------------------------
 
   is_windows_os = substr(pathexpand("~"), 0, 1) == "/" ? false : true
   az_command = try("az aks get-credentials --name ${module.kubernetes.name} --resource-group ${module.resource_group.name} --overwrite --admin", "")
