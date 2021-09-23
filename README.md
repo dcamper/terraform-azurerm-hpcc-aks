@@ -16,6 +16,8 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 
 * This module will create an AKS cluster in your current default Azure subscription.  You can view your current subscriptions, and determine which is the default, using the `az account list --output table` command.  To set a default subscription, use `az account set --subscription "My Subscription"`.
 
+* To successfully create everything you will need to have Azure's `Contributor` role plus access to `Microsoft.Authorization/*/Write` and `Microsoft.Authorization/*/Delete` permissions on your subscription.  You may have to create a custom role for this.  Of course, Azure's `Owner` role includes everything so if you're the subscription's owner then you're good to go.
+
 ## Installing/Using This Module
 
 1. If necessary, login to Azure.
