@@ -2,7 +2,7 @@
 
 This is a slightly-opinionated Terraform module for deploying an HPCC Systems cluster on Azure.  The goal is to provide a simple method for deploying a cluster from scratch, with only the most important options to consider.
 
-The HPCC Systems cluster this module creates uses ephemeral storage (meaning, the storage will be deleted if the cluster is deleted) unless a predefined storage account is cited.  See the `storage_account_name` and `storage_account_resource_group_name` options below.
+The HPCC Systems cluster this module creates uses ephemeral storage (meaning, the storage will be deleted if the cluster is deleted) unless a predefined storage account is cited.  See the section titled [Persistent Storage](#persistent_storage), below.
 
 This repo is a fork of the excellent work performed by Godson Fortil.  The original can be found at [https://github.com/gfortil/terraform-azurerm-hpcc-aks](https://github.com/gfortil/terraform-azurerm-hpcc-aks).
 
@@ -86,17 +86,28 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 | `thor_max_jobs` | number  | The maximum number of simultaneous Thor jobs allowed. Must be 1 or more. |
 | `storage_lz_gb` | number  | The amount of storage reserved for the landing zone in gigabytes. Must be 1 or more. |
 | `storage_data_gb` | number  | The amount of storage reserved for data in gigabytes. Must be 1 or more. |
-| `extra_tags` | map of string  | Map of name => value tags that can will be associated with the cluster. Format is `{"name"="value" [, "name"="value"]*}`. The `name` portion must be unique. To add no tags, use `{}`. |
+| `extra_tags` | map of string  | Map of name => value tags that can will be associated with the cluster. To add no additional tags, use `{}`. |
 | `node_size` | string  | The VM size for each node in the HPCC Systems node pool. Recommend "Standard\_B4ms" or better. See [https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general) for more information. |
 | `max_node_count` | number  | The maximum number of VM nodes to allocate for the HPCC Systems node pool. Must be 2 or more. |
 | `admin_email` | string  | Email address of the administrator of this HPCC Systems cluster. |
 | `admin_name` | string  | Name of the administrator of this HPCC Systems cluster. |
 | `admin_username` | string  | Username of the administrator of this HPCC Systems cluster. |
 | `azure_region` | string  | The Azure region abbreviation in which to create these resources. Must be one of ["eastus2", "centralus"]. |
-| `admin_ip_cidr_map` | map of string  | Map of name => CIDR IP addresses that can administrate this AKS. Format is `{"name"="cidr" [, "name"="cidr"]*}`. The `name` portion must be unique. To add no CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user. |
+| `admin_ip_cidr_map` | map of string  | Map of name => CIDR IP addresses that can administrate this AKS. To add no additional CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user. |
 | `hpcc_user_ip_cidr_list` | list of string  | List of additional CIDR addresses that can access this HPCC Systems cluster. To add no CIDR addresses, enter `[]`. |
-| `storage_account_name` | string  | If you are attaching to an existing storage account, put its name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a resource group for the storage account. |
-| `storage_account_resource_group_name` | string  | If you are attaching to an existing storage account, put its resource group name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a name for the storage account. |
+| `storage_account_name` | string  | If you are attaching to an existing storage account, put its name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a resource group for the storage account. See [Persistent Storage](#persistent_storage), below. |
+| `storage_account_resource_group_name` | string  | If you are attaching to an existing storage account, put its resource group name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a name for the storage account. See [Persistent Storage](#persistent_storage), below. |
+
+<a name="persistent_storage"></a>
+## Persistent Storage
+
+By default, this module creates an HPCC cluster that uses ephemeral storage.  That means that all storage associated with the cluster lives only as long as the Kubernetes cluster lives.  When the storage goes away, so does all of your data.
+
+Persistent storage, where your data will live beyond the lifetime of the Kubernetes cluster, is available.  This is accomplished by creating an Azure storage account prior to running this module, then giving this module the information needed for it to find and use that storage account.
+
+To make the creation of such a storage account easier, another Terraform module is available at [https://github.com/dcamper/terraform-azurerm-hpcc-storage](https://github.com/dcamper/terraform-azurerm-hpcc-storage).  Its setup and use is similar to this module.  Once you define your storage account, enter the appropriate values for `storage_account_name` and `storage_account_resource_group_name` when running this module.
+
+**Note:**  For performance reasons, it is best to create both the storage account and this HPCC cluster in the same Azure region.
 
 ## Recommendations
 
