@@ -3,29 +3,6 @@
 # if a .tfvars file is not supplied); there are no default values
 ###############################################################################
 
-variable "admin_email" {
-  type        = string
-  description = "REQUIRED.  Email address of the administrator of this HPCC Systems cluster.\nExample entry: jane.doe@hpccsystems.com"
-  validation {
-    condition     = length(regexall("^[^@]+@[^@]+$", var.admin_email)) > 0
-    error_message = "Value must at least look like a valid email address."
-  }
-}
-
-variable "admin_username" {
-  type        = string
-  description = "REQUIRED.  Username of the administrator of this HPCC Systems cluster.\nExample entry: jdoe"
-  validation {
-    condition     = length(var.admin_username) > 1 && length(regexall(" ", var.admin_username)) == 0
-    error_message = "Value must at least two characters in length and contain no spaces."
-  }
-}
-
-variable "admin_name" {
-  type        = string
-  description = "REQUIRED.  Name of the administrator of this HPCC Systems cluster.\nExample entry: Jane Doe"
-}
-
 variable "product_name" {
   type        = string
   description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 2-24 characters in length, all lowercase, no spaces, only dashes for punctuation.\nExample entry: my-product"
@@ -105,6 +82,43 @@ variable "extra_tags" {
   type        = map(string)
 }
 
+variable "node_size" {
+  type        = string
+  description = "REQUIRED.  The VM size for each node in the HPCC Systems node pool.\nRecommend \"Standard_B4ms\" or better.\nSee https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general for more information."
+}
+
+variable "max_node_count" {
+  type        = number
+  description = "REQUIRED.  The maximum number of VM nodes to allocate for the HPCC Systems node pool.\nMust be 2 or more."
+  validation {
+    condition     = var.max_node_count >= 2
+    error_message = "Value must be 2 or more."
+  }
+}
+
+variable "admin_email" {
+  type        = string
+  description = "REQUIRED.  Email address of the administrator of this HPCC Systems cluster.\nExample entry: jane.doe@hpccsystems.com"
+  validation {
+    condition     = length(regexall("^[^@]+@[^@]+$", var.admin_email)) > 0
+    error_message = "Value must at least look like a valid email address."
+  }
+}
+
+variable "admin_name" {
+  type        = string
+  description = "REQUIRED.  Name of the administrator of this HPCC Systems cluster.\nExample entry: Jane Doe"
+}
+
+variable "admin_username" {
+  type        = string
+  description = "REQUIRED.  Username of the administrator of this HPCC Systems cluster.\nExample entry: jdoe"
+  validation {
+    condition     = length(var.admin_username) > 1 && length(regexall(" ", var.admin_username)) == 0
+    error_message = "Value must at least two characters in length and contain no spaces."
+  }
+}
+
 variable "azure_region" {
   type        = string
   description = "REQUIRED.  The Azure region abbreviation in which to create these resources.\nMust be one of [\"eastus2\", \"centralus\"].\nExample entry: eastus2"
@@ -132,20 +146,6 @@ variable "storage_account_name" {
 variable "storage_account_resource_group_name" {
   type        = string
   description = "OPTIONAL.  If you are attaching to an existing storage account, enter its resource group name here.\nLeave blank if you do not have a storage account.\nIf you enter something here then you must also enter a name for the storage account."
-}
-
-variable "node_size" {
-  type        = string
-  description = "REQUIRED.  The VM size for each node in the HPCC Systems node pool.\nRecommend \"Standard_B4ms\" or better.\nSee https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general for more information."
-}
-
-variable "max_node_count" {
-  type        = number
-  description = "REQUIRED.  The maximum number of VM nodes to allocate for the HPCC Systems node pool.\nMust be 2 or more."
-  validation {
-    condition     = var.max_node_count >= 2
-    error_message = "Value must be 2 or more."
-  }
 }
 
 ###############################################################################
