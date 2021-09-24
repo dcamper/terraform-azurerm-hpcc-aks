@@ -17,3 +17,11 @@ output "stop_cluster_cmd" {
 output "start_cluster_cmd" {
   value = "az aks start --name ${module.kubernetes.name} --resource-group ${module.resource_group.name}"
 }
+
+output "azure_region" {
+  value = module.resource_group.location
+}
+
+output "subscription_id" {
+  value = data.azurerm_subscription.current.subscription_id
+}

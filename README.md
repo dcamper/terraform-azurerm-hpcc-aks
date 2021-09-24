@@ -32,15 +32,17 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 		* `cp examples/sample.tfvars terraform.tfvars`
 1. After the Kubernetes cluster is deployed, your local `kubectl` tool can be used to interact with it.  At some point during the deployment `kubectl` will acquire the login credentials for the cluster and it will be the current context (so any `kubectl` commands you enter will be directed to that cluster by default).
 
-Five items are shown at the end of a successful deployment:
-1. Azure security advisor recommendations.
+Several items are shown at the end of a successful deployment:
+* Azure security advisor recommendations.
 	* A new deployment will typically not have anything listed.  Security Advisor runs periodically, and it simply did not have time to generate any recommendations.  When updating an existing cluster, on the other hand, you may see some items appear here.
-1. Command that configures kubectl to connect to your new Kubernetes cluster.
+* Command that configures kubectl to connect to your new Kubernetes cluster.
 	* This command was automatically executed; it is provided for information only.
-1. The name of the resource group that was created during deployment.
+* The name of the resource group that was created during deployment.
 	* This is for information only.  You can reference this name when looking at Azure resources, such as from within the Azure Portal.
-1. The Azure CLI command that can be used to stop the AKS cluster you just deployed.
-1. The Azure CLI command that can be used to restart the AKS cluster you just deployed.
+* The Azure CLI command that can be used to stop the AKS cluster you just deployed.
+* The Azure CLI command that can be used to restart the AKS cluster you just deployed.
+* The Azure subscription ID under which these resources were created.
+* The Azure region in which these resources were created.
 
 ## Available Options
 
