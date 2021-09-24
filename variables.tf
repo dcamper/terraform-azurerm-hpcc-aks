@@ -1,5 +1,6 @@
 ###############################################################################
-# Prompted variables (user will be asked to supply them at plan/apply time)
+# Prompted variables (user will be asked to supply them at plan/apply time
+# if a .tfvars file is not supplied); there are no default values
 ###############################################################################
 
 variable "admin_email" {
