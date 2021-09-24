@@ -1,6 +1,6 @@
 
 # Abbreviated product name, suitable for use in Azure naming.
-# Must be 2-24 characters in length, all lowercase, no spaces, only dashes for punctuation.
+# Must be 3-16 characters in length, all lowercase letters or numbers, no spaces.
 # Value type: string
 # Example entry: "my-product"
 

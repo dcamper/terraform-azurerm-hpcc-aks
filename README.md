@@ -76,7 +76,7 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 
 |Option|Type|Description|
 |:-----|:---|:----------|
-| `product_name` | string | Abbreviated product name, suitable for use in Azure naming. Must be 2-24 characters in length, all lowercase, no spaces, only dashes for punctuation. |
+| `product_name` | string | Abbreviated product name, suitable for use in Azure naming. Must be 3-16 characters in length, all lowercase letters or numbers, no spaces. |
 | `hpcc_version` | string | The version of HPCC Systems to install. Only versions in nn.nn.nn format are supported. |
 | `enable_roxie` | boolean | Enable ROXIE? This will also expose port 8002 on the cluster. |
 | `enable_elk` | boolean  | Enable ELK (Elasticsearch, Logstash, and Kibana) Stack? This will also expose port 5601 on the cluster. |
