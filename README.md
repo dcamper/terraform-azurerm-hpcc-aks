@@ -4,7 +4,7 @@ This is a slightly-opinionated Terraform module for deploying an HPCC Systems cl
 
 The HPCC Systems cluster this module creates uses ephemeral storage (meaning, the storage will be deleted if the cluster is deleted) unless a predefined storage account is cited.  See the section titled [Persistent Storage](#persistent_storage), below.
 
-This repo is a fork of the excellent work performed by Godson Fortil.  The original can be found at [https://github.com/gfortil/terraform-azurerm-hpcc-aks](https://github.com/gfortil/terraform-azurerm-hpcc-aks).
+This repo is a fork of the excellent work performed by Godson Fortil.  The original can be found at [https://github.com/hpcc-systems/terraform-azurerm-hpcc-aks](https://github.com/hpcc-systems/terraform-azurerm-hpcc-aks).
 
 ## Requirements
 
