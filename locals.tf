@@ -1,7 +1,7 @@
 locals {
   metadata = {
     project             = "hpcc_k8s"
-    product_name        = var.product_name
+    product_name        = lower(var.product_name)
     business_unit       = "infra"
     environment         = "sandbox"
     market              = "us"
@@ -17,15 +17,15 @@ locals {
 
   enforced_tags = {
     "admin" = var.admin_name
-    "email" = var.admin_email
+    "email" = lower(var.admin_email)
     "owner" = var.admin_name
-    "owner_email" = var.admin_email
+    "owner_email" = lower(var.admin_email)
   }
   tags = merge(module.metadata.tags, local.enforced_tags, try(var.extra_tags, {}))
 
   #----------------------------------------------------------------------------
 
-  aks_cluster_name = "${local.names.resource_group_type}-${local.names.product_name}-terraform-${local.names.location}-${var.admin_username}-${terraform.workspace}"
+  aks_cluster_name = lower("${local.names.resource_group_type}-${local.names.product_name}-terraform-${local.names.location}-${var.admin_username}-${terraform.workspace}")
 
   #----------------------------------------------------------------------------
 

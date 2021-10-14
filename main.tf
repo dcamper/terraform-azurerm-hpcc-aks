@@ -25,7 +25,7 @@ module "metadata" {
   naming_rules = module.naming.yaml
 
   market              = local.metadata.market
-  location            = var.azure_region
+  location            = lower(var.azure_region)
   sre_team            = local.metadata.sre_team
   environment         = local.metadata.environment
   product_name        = local.metadata.product_name
@@ -41,7 +41,7 @@ module "resource_group" {
   source = "github.com/Azure-Terraform/terraform-azurerm-resource-group.git?ref=v2.0.0"
 
   unique_name = false
-  location    = var.azure_region
+  location    = lower(var.azure_region)
   names       = local.names
   tags        = local.tags
 }
@@ -52,7 +52,7 @@ module "virtual_network" {
   naming_rules = module.naming.yaml
 
   resource_group_name = module.resource_group.name
-  location            = var.azure_region
+  location            = lower(var.azure_region)
   names               = local.names
   tags                = local.tags
 
@@ -95,7 +95,7 @@ module "kubernetes" {
   source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.1"
 
   cluster_name        = local.aks_cluster_name
-  location            = var.azure_region
+  location            = lower(var.azure_region)
   names               = local.names
   tags                = local.tags
   resource_group_name = module.resource_group.name
@@ -137,7 +137,7 @@ resource "kubernetes_secret" "sa_secret" {
   }
 
   data = local.has_storage_account ? {
-    azurestorageaccountname = var.storage_account_name
+    azurestorageaccountname = lower(var.storage_account_name)
     azurestorageaccountkey  = data.azurerm_storage_account.hpccsa[0].primary_access_key
   } : {}
 
