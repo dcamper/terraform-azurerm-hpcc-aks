@@ -73,7 +73,7 @@ variable "storage_data_gb" {
   description = "REQUIRED.  The amount of storage reserved for data in gigabytes.\nMust be 10 or more"
   validation {
     condition     = var.storage_data_gb >= 10
-    error_message = "Value must be 1 or more."
+    error_message = "Value must be 10 or more."
   }
 }
 
