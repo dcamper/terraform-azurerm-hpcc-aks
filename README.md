@@ -77,7 +77,7 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 
 |Option|Type|Description|
 |:-----|:---|:----------|
-| `product_name` | string | Abbreviated product name, suitable for use in Azure naming. Must be 3-16 characters in length, all lowercase letters or numbers, no spaces. |
+| `product_name` | string | Abbreviated product name, suitable for use in Azure naming. Must be 2-23 characters in length, all lowercase or numeric characters. |
 | `hpcc_version` | string | The version of HPCC Systems to install. Only versions in nn.nn.nn format are supported. |
 | `enable_roxie` | boolean | Enable ROXIE? This will also expose port 8002 on the cluster. |
 | `enable_elk` | boolean  | Enable ELK (Elasticsearch, Logstash, and Kibana) Stack? This will also expose port 5601 on the cluster. |
@@ -87,7 +87,7 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 | `thor_max_jobs` | number  | The maximum number of simultaneous Thor jobs allowed. Must be 1 or more. |
 | `storage_lz_gb` | number  | The amount of storage reserved for the landing zone in gigabytes. Must be 1 or more. |
 | `storage_data_gb` | number  | The amount of storage reserved for data in gigabytes. Must be 1 or more. |
-| `extra_tags` | map of string  | Map of name => value tags that can will be associated with the cluster. To add no additional tags, use `{}`. |
+| `extra_tags` | map of string  | Map of name => value tags that can will be associated with the cluster. To add no additional tags, use `{}`. ***This is OPTIONAL, defaulting to an empty string map.*** |
 | `node_size` | string  | The VM size for each node in the HPCC Systems node pool. Recommend "Standard\_B4ms" or better. See [https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general) for more information. |
 | `max_node_count` | number  | The maximum number of VM nodes to allocate for the HPCC Systems node pool. Must be 2 or more. |
 | `admin_email` | string  | Email address of the administrator of this HPCC Systems cluster. |

@@ -5,10 +5,10 @@
 
 variable "product_name" {
   type        = string
-  description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 2-24 characters in length, all lowercase, no spaces, only dashes for punctuation.\nExample entry: my-product"
+  description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 2-23 characters in length, all lowercase or numeric characters.\nExample entry: myproduct"
   validation {
-    condition     = length(regexall("^[a-z][a-z0-9\\-]{1,23}$", var.product_name)) == 1
-    error_message = "Value must be 2-24 characters in length, all lowercase, no spaces, only dashes for punctuation."
+    condition     = length(regexall("^[a-z][a-z0-9]{1,22}$", var.product_name)) == 1
+    error_message = "Value must be 2-23 characters in length, all lowercase or numbers."
   }
 }
 
@@ -78,8 +78,9 @@ variable "storage_data_gb" {
 }
 
 variable "extra_tags" {
-  description = "REQUIRED.  Map of name => value tags that can will be associated with the cluster.\nFormat is '{\"name\"=\"value\" [, \"name\"=\"value\"]*}'.\nThe 'name' portion must be unique.\nTo add no tags, enter '{}'."
+  description = "OPTIONAL.  Map of name => value tags that can will be associated with the cluster.\nFormat is '{\"name\"=\"value\" [, \"name\"=\"value\"]*}'.\nThe 'name' portion must be unique.\nTo add no tags, enter '{}'. This is OPTIONAL and defaults to an empty string map."
   type        = map(string)
+  default     = {}
 }
 
 variable "node_size" {
@@ -129,13 +130,13 @@ variable "azure_region" {
 }
 
 variable "admin_ip_cidr_map" {
-  description = "REQUIRED.  Map of name => CIDR IP addresses that can administrate this AKS.\nFormat is '{\"name\"=\"cidr\" [, \"name\"=\"cidr\"]*}'.\nThe 'name' portion must be unique.\nDefault value is '{}' means no CIDR addresses.\nThe corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user."
+  description = "OPTIONAL.  Map of name => CIDR IP addresses that can administrate this AKS.\nFormat is '{\"name\"=\"cidr\" [, \"name\"=\"cidr\"]*}'.\nThe 'name' portion must be unique.\nDefault value is '{}' means no CIDR addresses.\nThe corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user."
   type        = map(string)
   default     = {}
 }
 
 variable "hpcc_user_ip_cidr_list" {
-  description = "REQUIRED.  List of additional CIDR addresses that can access this HPCC Systems cluster.\nDefault value is '[]' which means no CIDR addresses, enter '[]'."
+  description = "OPTIONAL.  List of additional CIDR addresses that can access this HPCC Systems cluster.\nDefault value is '[]' which means no CIDR addresses, enter '[]'."
   type        = list(string)
   default     = []
 }
