@@ -16,6 +16,9 @@ crash.log
 *.tfvars
 !examples/*.tfvars
 
+# Ignore backend files because they may contain secrets
+backend.*
+
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
 override.tf
