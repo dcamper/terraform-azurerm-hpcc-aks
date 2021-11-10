@@ -144,6 +144,23 @@ resource "kubernetes_secret" "sa_secret" {
   type = "Opaque"
 }
 
+#------------------------------------------------------------------------------
+
+data "azurerm_storage_account" "example" {
+  count                = local.has_storage_account ? 1 : 0
+  name                 = var.storage_account_name
+  resource_group_name  = var.storage_account_resource_group_name
+}
+
+data "azurerm_storage_share" "existing_storage" {
+  for_each = toset(local.has_storage_account ? local.storage_share_names : [])
+
+  storage_account_name = var.storage_account_name
+  name                 = each.key
+}
+
+#------------------------------------------------------------------------------
+
 resource "helm_release" "hpcc" {
   name                       = local.hpcc.name
   chart                      = "hpcc"

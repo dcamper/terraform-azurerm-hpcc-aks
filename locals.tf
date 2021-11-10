@@ -49,13 +49,21 @@ locals {
   #----------------------------------------------------------------------------
 
   has_storage_account = try(var.storage_account_name, "") != "" && try(var.storage_account_resource_group_name, "") != ""
+  
+  storage_share_names = [
+    "dalishare",
+    "dllsshare",
+    "sashashare",
+    "datashare",
+    "lzshare"
+  ]
 
   storage_size = {
-      dali   = "10Gi"
-      dll    = "4Gi"
-      sasha  = "2Gi"
-      data   = "${var.storage_data_gb}Gi"
-      lz     = "${var.storage_lz_gb}Gi"
+      "dalishare"   = local.has_storage_account ? format("%dG", data.azurerm_storage_share.existing_storage["dalishare"].quota) : "10G"
+      "dllsshare"   = local.has_storage_account ? format("%dG", data.azurerm_storage_share.existing_storage["dllsshare"].quota) : "4G"
+      "sashashare"  = local.has_storage_account ? format("%dG", data.azurerm_storage_share.existing_storage["sashashare"].quota) : "2G"
+      "datashare"   = local.has_storage_account ? format("%dG", data.azurerm_storage_share.existing_storage["datashare"].quota) : "${var.storage_data_gb}G"
+      "lzshare"     = local.has_storage_account ? format("%dG", data.azurerm_storage_share.existing_storage["lzshare"].quota) : "${var.storage_lz_gb}G"
   }
 
   #----------------------------------------------------------------------------
@@ -101,35 +109,35 @@ locals {
         planes = [
           {
             name         = "dali"
-            storageSize  = local.storage_size["dali"]
+            storageSize  = local.storage_size["dalishare"]
             storageClass = "azurefile"
             prefix       = "/var/lib/HPCCSystems/dalistorage"
             category     = "dali"
           },
           {
             name         = "dll"
-            storageSize  = local.storage_size["dll"]
+            storageSize  = local.storage_size["dllsshare"]
             storageClass = "azurefile"
             prefix       = "/var/lib/HPCCSystems/queries"
             category     = "dll"
           },
           {
             name         = "sasha"
-            storageSize  = local.storage_size["sasha"]
+            storageSize  = local.storage_size["sashashare"]
             storageClass = "azurefile"
             prefix       = "/var/lib/HPCCSystems/sashastorage"
             category     = "sasha"
           },
           {
             name         = "data"
-            storageSize  = local.storage_size["data"]
+            storageSize  = local.storage_size["datashare"]
             storageClass = "azurefile"
             prefix       = "/var/lib/HPCCSystems/hpcc-data"
             category     = "data"
           },
           {
             name         = "mydropzone"
-            storageSize  = local.storage_size["lz"]
+            storageSize  = local.storage_size["lzshare"]
             storageClass = "azurefile"
             prefix       = "/var/lib/HPCCSystems/mydropzone"
             category     = "lz"
@@ -156,7 +164,7 @@ locals {
         {
           name      = "dali"
           subPath   = "dalistorage"
-          size      = local.storage_size["dali"]
+          size      = local.storage_size["dalishare"]
           category  = "dali"
           sku       = "Standard_LRS"
           shareName = "dalishare"
@@ -164,7 +172,7 @@ locals {
         {
           name      = "dll"
           subPath   = "queries"
-          size      = local.storage_size["dll"]
+          size      = local.storage_size["dllsshare"]
           category  = "dll"
           rwmany    = true
           sku       = "Standard_LRS"
@@ -173,7 +181,7 @@ locals {
         {
           name      = "sasha"
           subPath   = "sasha"
-          size      = local.storage_size["sasha"]
+          size      = local.storage_size["sashashare"]
           rwmany    = true
           category  = "sasha"
           sku       = "Standard_LRS"
@@ -182,7 +190,7 @@ locals {
         {
           name      = "data"
           subPath   = "hpcc-data"
-          size      = local.storage_size["data"]
+          size      = local.storage_size["datashare"]
           category  = "data"
           rwmany    = true
           sku       = "Standard_LRS"
@@ -191,7 +199,7 @@ locals {
         {
           name      = "mydropzone"
           subPath   = "dropzone"
-          size      = local.storage_size["lz"]
+          size      = local.storage_size["lzshare"]
           rwmany    = true
           category  = "lz"
           sku       = "Standard_LRS"

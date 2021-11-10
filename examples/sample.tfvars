@@ -40,7 +40,7 @@ enable_elk=false
 # Recommended value: true
 # Example entry: true
 
-enable_rbac_ad=true
+enable_rbac_ad=false
 
 #------------------------------------------------------------------------------
 
@@ -69,6 +69,7 @@ thor_max_jobs=2
 
 # The amount of storage reserved for the landing zone in gigabytes.
 # Must be 1 or more.
+# If a storage account is defined (see below) then this value is ignored.
 
 storage_lz_gb=25
 
@@ -76,6 +77,7 @@ storage_lz_gb=25
 
 # The amount of storage reserved for data in gigabytes.
 # Must be 1 or more.
+# If a storage account is defined (see below) then this value is ignored.
 
 storage_data_gb=100
 
