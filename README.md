@@ -73,7 +73,7 @@ Options have data types.  The ones used in this module are:
 		* `["value1", "value2"]`
 	* Empty value is `[]`
 
-The following options should be set in your `terraform.tfvars` file (or entered interactively, if you choose to not create a file):
+The following options should be set in your `terraform.tfvars` file (or entered interactively, if you choose to not create a file).  Only a few of them have default values (as noted); the rest are required.
 
 |Option|Type|Description|
 |:-----|:---|:----------|
@@ -94,10 +94,10 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 | `admin_name` | string  | Name of the administrator of this HPCC Systems cluster. |
 | `admin_username` | string  | Username of the administrator of this HPCC Systems cluster. |
 | `azure_region` | string  | The Azure region abbreviation in which to create these resources. Must be one of ["eastus2", "centralus"]. |
-| `admin_ip_cidr_map` | map of string  | Map of name => CIDR IP addresses that can administrate this AKS. To add no additional CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user. |
-| `hpcc_user_ip_cidr_list` | list of string  | List of additional CIDR addresses that can access this HPCC Systems cluster. To add no CIDR addresses, enter `[]`. |
-| `storage_account_name` | string  | If you are attaching to an existing storage account, put its name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a resource group for the storage account. See [Persistent Storage](#persistent_storage), below. |
-| `storage_account_resource_group_name` | string  | If you are attaching to an existing storage account, put its resource group name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a name for the storage account. See [Persistent Storage](#persistent_storage), below. |
+| `admin_ip_cidr_map` | map of string  | Map of name => CIDR IP addresses that can administrate this AKS. To add no additional CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user.  ***This is OPTIONAL, defaulting to an empty string map.*** |
+| `hpcc_user_ip_cidr_list` | list of string  | List of additional CIDR addresses that can access this HPCC Systems cluster. To add no CIDR addresses, enter `[]`.  ***This is OPTIONAL, defaulting to an empty string list.*** |
+| `storage_account_name` | string  | If you are attaching to an existing storage account, put its name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a resource group for the storage account. See [Persistent Storage](#persistent_storage), below.  ***This is OPTIONAL, defaulting to an empty string.*** |
+| `storage_account_resource_group_name` | string  | If you are attaching to an existing storage account, put its resource group name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a name for the storage account. See [Persistent Storage](#persistent_storage), below.  ***This is OPTIONAL, defaulting to an empty string.*** |
 
 <a name="persistent_storage"></a>
 ## Persistent Storage

@@ -129,23 +129,27 @@ variable "azure_region" {
 }
 
 variable "admin_ip_cidr_map" {
-  description = "REQUIRED.  Map of name => CIDR IP addresses that can administrate this AKS.\nFormat is '{\"name\"=\"cidr\" [, \"name\"=\"cidr\"]*}'.\nThe 'name' portion must be unique.\nTo add no CIDR addresses, enter '{}'.\nThe corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user."
+  description = "REQUIRED.  Map of name => CIDR IP addresses that can administrate this AKS.\nFormat is '{\"name\"=\"cidr\" [, \"name\"=\"cidr\"]*}'.\nThe 'name' portion must be unique.\nDefault value is '{}' means no CIDR addresses.\nThe corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user."
   type        = map(string)
+  default     = {}
 }
 
 variable "hpcc_user_ip_cidr_list" {
-  description = "REQUIRED.  List of additional CIDR addresses that can access this HPCC Systems cluster.\nTo add no CIDR addresses, enter '[]'."
+  description = "REQUIRED.  List of additional CIDR addresses that can access this HPCC Systems cluster.\nDefault value is '[]' which means no CIDR addresses, enter '[]'."
   type        = list(string)
+  default     = []
 }
 
 variable "storage_account_name" {
   type        = string
   description = "OPTIONAL.  If you are attaching to an existing storage account, enter its name here.\nLeave blank if you do not have a storage account.\nIf you enter something here then you must also enter a resource group for the storage account.\nExample entry: my-product-sa"
+  default     = ""
 }
 
 variable "storage_account_resource_group_name" {
   type        = string
   description = "OPTIONAL.  If you are attaching to an existing storage account, enter its resource group name here.\nLeave blank if you do not have a storage account.\nIf you enter something here then you must also enter a name for the storage account."
+  default     = ""
 }
 
 ###############################################################################
