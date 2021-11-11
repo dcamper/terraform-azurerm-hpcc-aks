@@ -184,7 +184,7 @@ resource "helm_release" "hpcc" {
     [yamlencode(local.hpcc.chart_values)]
   )
 
-  depends_on = [helm_release.storage, module.kubernetes]
+  depends_on = [module.kubernetes]
 }
 
 resource "helm_release" "elk" {
