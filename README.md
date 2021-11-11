@@ -147,4 +147,4 @@ To make the creation of such a storage account easier, another Terraform module 
 	* Then, of course, fix whatever caused the deployment to fail.
 * If want to completely reset Terraform, issue `rm -rf .terraform* *.tfstate*` and then `terraform init`.
 * If you are using a storage account and the storage account's file share quotas change, the easiest way to make the currently-running HPCC see the new values is to recreate it.  To recreate HPCC, tell Terraform during apply:  `terraform apply -replace="helm_release.hpcc"`
-	* Bonus:  This technique works if HPCC gets into a weird state and you basically need to restart it.
+	* Bonus:  This technique works if HPCC gets into a weird state and you basically need to restart it (but note that you will likely get new IP addresses in the process).
