@@ -261,5 +261,7 @@ resource "null_resource" "az" {
     interpreter = local.is_windows_os ? ["PowerShell", "-Command"] : ["/bin/bash", "-c"]
   }
 
-  triggers = { kubernetes_id = module.kubernetes.id } //must be run after the Kubernetes cluster is deployed.
+  triggers = {
+    build_number = "${timestamp()}" # Always trigger
+  }
 }
