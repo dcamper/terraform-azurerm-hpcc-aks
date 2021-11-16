@@ -1,0 +1,5 @@
+placements:
+ - pods: ["all"]
+   placement:
+     nodeSelector:
+       group: "hpcc"

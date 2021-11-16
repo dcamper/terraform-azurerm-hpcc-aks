@@ -38,8 +38,9 @@ locals {
       max_count           = 2
     }
 
-    addpool1 = {
+    hpcc = {
       vm_size             = var.node_size
+      node_labels         = {"group": "hpcc"}
       enable_auto_scaling = true
       min_count           = 1
       max_count           = var.max_node_count
@@ -80,6 +81,7 @@ locals {
     name           = "${local.metadata.product_name}-hpcc"
 
     values         = concat(
+      ["./customizations/placements.yaml"],
       [var.enable_roxie ? "./customizations/esp-roxie.yaml" : "./customizations/esp.yaml"],
       ["./customizations/eclcc.yaml"],
       ["./customizations/thor.yaml"],

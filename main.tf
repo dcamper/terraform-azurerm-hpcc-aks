@@ -69,8 +69,6 @@ module "virtual_network" {
       cidrs                                          = ["10.1.1.0/24"]
       route_table_association                        = "default"
       configure_nsg_rules                            = false
-      enforce_private_link_endpoint_network_policies = true
-      enforce_private_link_service_network_policies  = true
     }
   }
 
@@ -262,6 +260,7 @@ resource "null_resource" "az" {
   }
 
   triggers = {
-    build_number = "${timestamp()}" # Always trigger
+    kubernetes_id = module.kubernetes.id
+    build_number  = "${timestamp()}" # always trigger
   }
 }
