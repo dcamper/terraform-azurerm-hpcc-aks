@@ -144,12 +144,6 @@ resource "kubernetes_secret" "sa_secret" {
 
 #------------------------------------------------------------------------------
 
-data "azurerm_storage_account" "example" {
-  count                = local.has_storage_account ? 1 : 0
-  name                 = var.storage_account_name
-  resource_group_name  = var.storage_account_resource_group_name
-}
-
 data "azurerm_storage_share" "existing_storage" {
   for_each = toset(local.has_storage_account ? local.storage_share_names : [])
 
@@ -160,6 +154,10 @@ data "azurerm_storage_share" "existing_storage" {
 #------------------------------------------------------------------------------
 
 resource "helm_release" "hpcc" {
+  depends_on = [
+    module.kubernetes
+  ]
+
   name                       = local.hpcc.name
   chart                      = "hpcc"
   repository                 = "https://hpcc-systems.github.io/helm-chart/"
@@ -181,8 +179,6 @@ resource "helm_release" "hpcc" {
     try([for v in local.hpcc.values : file(v)], []),
     [yamlencode(local.hpcc.chart_values)]
   )
-
-  depends_on = [module.kubernetes]
 }
 
 resource "helm_release" "elk" {
@@ -206,6 +202,7 @@ resource "helm_release" "elk" {
 
 resource "helm_release" "storage" {
   count = local.has_storage_account ? 1 : 0
+
   name                       = "azstorage"
   chart                      = local.storage_chart
   values                     = [yamlencode(local.hpcc.storage_sa1)]
@@ -222,34 +219,129 @@ resource "helm_release" "storage" {
   lint                       = null
 }
 
-resource "azurerm_network_security_rule" "ingress_internet_admin" {
-  name                        = "HPCC_Admin"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "tcp"
-  source_port_range           = "*"
-  destination_port_ranges     = local.exposed_ports
-  source_address_prefixes     = values(local.admin_cidr_map_bare)
-  destination_address_prefix  = "*"
-  resource_group_name         = module.virtual_network.subnets["iaas-public"].resource_group_name
-  network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
+#------------------------------------------------------------------------------
+
+# When an HPCC service (ECL Watch or Roxie) is made global, AKS creates load
+# balancers, public IP addresses, and network security groups within its
+# MC_* self-managed resource group to allow access.  Unfortunately, the
+# access that is granted is "all Internet traffic without restrictions" which
+# is not that great.
+#
+# To complicate matters, the MC_* resource group is special.  Ordinarily, we
+# should be able to ask Terraform to extract NSG resources from there but we
+# apparently are locked out:  The call succeeds, but no results are returned.
+#
+# The following code works around those limitations to get a handle on the
+# network security group, so we can then make modifications to it.  It is
+# probably fragile.
+
+# Load the information from a particular load balancer we know was created
+# in the MC_* resource group
+data "azurerm_lb" "rez" {
+  depends_on = [
+    module.kubernetes
+  ]
+
+  name                = "kubernetes"
+  resource_group_name = module.kubernetes.node_resource_group
 }
 
+# Get the backend address pool from that load balancer
+data "azurerm_lb_backend_address_pool" "rez" {
+  name                = "kubernetes"
+  loadbalancer_id     = data.azurerm_lb.rez.id
+}
+
+# Build the name of the NSG we're interested in
+locals {
+  k8s_mc_unique_id = regex("virtualMachineScaleSets/aks-system-(\\d+)-vmss/", data.azurerm_lb_backend_address_pool.rez.backend_ip_configurations.0.id)
+  k8s_nsg_name = format("aks-agentpool-%s-nsg", local.k8s_mc_unique_id[0])
+}
+
+# Load the information from the NSG
+data "azurerm_network_security_group" "k8s_nsg" {
+  depends_on = [
+    module.kubernetes
+  ]
+
+  name                = local.k8s_nsg_name
+  resource_group_name = module.kubernetes.node_resource_group
+}
+
+# Build up the values we'll use to define new NSG rules; the
+# nsg_info variable is the final result
+locals {
+  ecl_watch_ips = [
+    for rule in data.azurerm_network_security_group.k8s_nsg.security_rule : (rule.priority == 500 ? rule.destination_address_prefix : "")
+  ]
+  ecl_watch_ips_1 = compact(local.ecl_watch_ips)
+  ecl_watch_ip_addr = local.ecl_watch_ips_1[0]
+
+  roxie_ips = [
+    for rule in data.azurerm_network_security_group.k8s_nsg.security_rule : (rule.priority == 501 ? rule.destination_address_prefix : "")
+  ]
+  roxie_ips_1 = compact(local.roxie_ips)
+  roxie_ip_addr = local.roxie_ips_1[0]
+
+  dest_ip_addrs = var.enable_roxie ? [local.ecl_watch_ip_addr, local.roxie_ip_addr] : [local.ecl_watch_ip_addr]
+
+  nsg_info = {
+    network_security_group_name  = data.azurerm_network_security_group.k8s_nsg.name
+    resource_group_name          = lower(data.azurerm_network_security_group.k8s_nsg.resource_group_name)
+    destination_address_prefixes = local.dest_ip_addrs
+  }
+}
+
+# A rule admitting HPCC admins to the cluster as users
+resource "azurerm_network_security_rule" "ingress_internet_admin" {
+  name                          = "HPCC_Admin"
+  priority                      = 100
+  direction                     = "Inbound"
+  access                        = "Allow"
+  protocol                      = "tcp"
+  source_port_range             = "*"
+  destination_port_ranges       = local.exposed_ports
+  source_address_prefixes       = values(local.admin_cidr_map_bare)
+  destination_address_prefixes  = local.nsg_info.destination_address_prefixes
+  resource_group_name           = local.nsg_info.resource_group_name
+  network_security_group_name   = local.nsg_info.network_security_group_name
+}
+
+# A rule admitting HPCC users to the cluster
 resource "azurerm_network_security_rule" "ingress_internet_users" {
   count = length(local.hpcc_user_ip_cidr_list) > 0 ? 1 : 0
-  name                        = "HPCC_Users"
-  priority                    = 110
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "tcp"
-  source_port_range           = "*"
-  destination_port_ranges     = local.exposed_ports
-  source_address_prefixes     = local.hpcc_user_ip_cidr_list
-  destination_address_prefix  = "*"
-  resource_group_name         = module.virtual_network.subnets["iaas-public"].resource_group_name
-  network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
+
+  name                          = "HPCC_Users"
+  priority                      = 110
+  direction                     = "Inbound"
+  access                        = "Allow"
+  protocol                      = "tcp"
+  source_port_range             = "*"
+  destination_port_ranges       = local.exposed_ports
+  source_address_prefixes       = local.hpcc_user_ip_cidr_list
+  destination_address_prefixes  = local.nsg_info.destination_address_prefixes
+  resource_group_name           = local.nsg_info.resource_group_name
+  network_security_group_name   = local.nsg_info.network_security_group_name
 }
+
+# Catch-all rule that denies access from the internet; note that this
+# rule precedes the one supplied by AKS that grants everyone access, which
+# has a priority of 500, so this one will trump the AKS-supplied rule
+resource "azurerm_network_security_rule" "deny_other_internet" {
+  name                          = "Deny_Other_Internet"
+  priority                      = 400
+  direction                     = "Inbound"
+  access                        = "Deny"
+  protocol                      = "tcp"
+  source_port_range             = "*"
+  destination_port_ranges       = local.exposed_ports
+  source_address_prefix         = "Internet"
+  destination_address_prefixes  = local.nsg_info.destination_address_prefixes
+  resource_group_name           = local.nsg_info.resource_group_name
+  network_security_group_name   = local.nsg_info.network_security_group_name
+}
+
+#------------------------------------------------------------------------------
 
 resource "null_resource" "az" {
   count = var.auto_connect ? 1 : 0
