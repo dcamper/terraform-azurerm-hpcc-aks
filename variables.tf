@@ -152,13 +152,3 @@ variable "storage_account_resource_group_name" {
   description = "OPTIONAL.  If you are attaching to an existing storage account, enter its resource group name here.\nLeave blank if you do not have a storage account.\nIf you enter something here then you must also enter a name for the storage account."
   default     = ""
 }
-
-###############################################################################
-# Unprompted variables that can be overridden within a .tfvars file
-###############################################################################
-
-variable "auto_connect" {
-  description = "If true, creates (and possibly overwrites) a context for kubectl and sets it to the just-created AKS cluster."
-  type        = bool
-  default     = true
-}
