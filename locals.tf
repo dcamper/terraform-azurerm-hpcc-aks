@@ -31,19 +31,25 @@ locals {
 
   node_pools = {
     system = {
-      vm_size             = "Standard_B2s"
-      node_count          = 1
-      enable_auto_scaling = true
-      min_count           = 1
-      max_count           = 2
+      vm_size                      = "Standard_B2s"
+      node_count                   = 1
+      enable_auto_scaling          = true
+      only_critical_addons_enabled = true
+      min_count                    = 1
+      max_count                    = 2
+      subnet                       = "private"
+      availability_zones           = []
     }
 
     hpcc = {
-      vm_size             = var.node_size
-      node_labels         = {"group": "hpcc"}
-      enable_auto_scaling = true
-      min_count           = 1
-      max_count           = var.max_node_count
+      vm_size                      = var.node_size
+      node_labels                  = {"group": "hpcc"}
+      enable_auto_scaling          = true
+      min_count                    = 1
+      max_count                    = var.max_node_count
+      priority                     = "Regular"
+      subnet                       = "public"
+      availability_zones           = []
     }
   }
 
@@ -297,17 +303,13 @@ locals {
   # Remove /31 and /32 CIDR suffixes from HPCC user access list
   hpcc_user_ip_cidr_list = [for s in var.hpcc_user_ip_cidr_list : replace(s, "/\\/3[12]$/", "")]
 
-  # CIDRs that can access HPCC as users; if var.hpcc_user_ip_cidr_list is empty then
-  # the assumption is that the entire internet can access, and the value for that is
-  # an empty set; if var.hpcc_user_ip_cidr_list is not empty then we need to concatenate
-  # the admin users as well
-  hpcc_access_cidr_list = length(var.hpcc_user_ip_cidr_list) > 0 ? concat(var.hpcc_user_ip_cidr_list, values(local.admin_cidr_map)) : []
+  #----------------------------------------------------------------------------
 
-  hpcc_access_patch_str = jsonencode({
-    spec = {
-      loadBalancerSourceRanges = local.hpcc_access_cidr_list
-    }
-  })
+  exposed_ports = concat(
+    [tostring(local.hpcc.ecl_watch_port)],
+    var.enable_elk ? [tostring(local.hpcc.elk_port)] : [],
+    var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
+  )
 
   #----------------------------------------------------------------------------
 

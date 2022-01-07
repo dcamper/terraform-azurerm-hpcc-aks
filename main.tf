@@ -60,15 +60,15 @@ module "virtual_network" {
 
   subnets = {
     iaas-private = {
-      cidrs                   = ["10.1.0.0/24"]
-      route_table_association = "default"
-      configure_nsg_rules     = false
-      service_endpoints       = ["Microsoft.Storage"]
+      cidrs                      = ["10.1.0.0/24"]
+      route_table_association    = "default"
+      configure_nsg_rules        = false
+      service_endpoints          = ["Microsoft.Storage"]
     }
     iaas-public = {
-      cidrs                                          = ["10.1.1.0/24"]
-      route_table_association                        = "default"
-      configure_nsg_rules                            = false
+      cidrs                      = ["10.1.1.0/24"]
+      route_table_association    = "default"
+      configure_nsg_rules        = false
     }
   }
 
@@ -221,7 +221,60 @@ resource "helm_release" "storage" {
 
 #------------------------------------------------------------------------------
 
-# Conditionally set the kubectl context
+# Add admin users to HPCC access if there is an explicit list of HPCC users defined
+resource "azurerm_network_security_rule" "ingress_internet_admin" {
+  count = length(local.hpcc_user_ip_cidr_list) > 0 ? 1 : 0
+
+  name                        = "HPCC_Admin"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "tcp"
+  source_port_range           = "*"
+  destination_port_ranges     = local.exposed_ports
+  source_address_prefixes     = values(local.admin_cidr_map_bare)
+  destination_address_prefix  = "*"
+  resource_group_name         = module.virtual_network.subnets["iaas-public"].resource_group_name
+  network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
+}
+
+# Add regular users to HPCC access if there is an explicit list of HPCC users defined
+resource "azurerm_network_security_rule" "ingress_internet_users" {
+  count = length(local.hpcc_user_ip_cidr_list) > 0 ? 1 : 0
+
+  name                        = "HPCC_Users"
+  priority                    = 110
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "tcp"
+  source_port_range           = "*"
+  destination_port_ranges     = local.exposed_ports
+  source_address_prefixes     = local.hpcc_user_ip_cidr_list
+  destination_address_prefix  = "*"
+  resource_group_name         = module.virtual_network.subnets["iaas-public"].resource_group_name
+  network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
+}
+
+# Add public access to HPCC if there are no explicit HPCC users defined
+resource "azurerm_network_security_rule" "ingress_internet_all" {
+  count = length(local.hpcc_user_ip_cidr_list) == 0 ? 1 : 0
+
+  name                        = "HPCC_Public"
+  priority                    = 120
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "tcp"
+  source_port_range           = "*"
+  destination_port_ranges     = local.exposed_ports
+  source_address_prefix       = "Internet"
+  destination_address_prefix  = "*"
+  resource_group_name         = module.virtual_network.subnets["iaas-public"].resource_group_name
+  network_security_group_name = module.virtual_network.subnets["iaas-public"].network_security_group_name
+}
+
+#------------------------------------------------------------------------------
+
+# Set the kubectl context
 resource "null_resource" "az" {
   provisioner "local-exec" {
     command     = local.az_command
@@ -231,41 +284,5 @@ resource "null_resource" "az" {
   triggers = {
     kubernetes_id = module.kubernetes.id
     build_number  = "${timestamp()}" # always trigger
-  }
-}
-
-# ECL Watch: Patch network accessibility
-resource "null_resource" "eclwatch_nsg_patch" {
-  depends_on = [
-    null_resource.az,
-    helm_release.hpcc
-  ]
-
-  provisioner "local-exec" {
-    command     = "kubectl patch service eclwatch --patch '${local.hpcc_access_patch_str}'"
-    interpreter = local.is_windows_os ? ["PowerShell", "-Command"] : ["/bin/bash", "-c"]
-  }
-
-  triggers = {
-    content = local.hpcc_access_patch_str
-  }
-}
-
-# ROXIE: Patch network accessibility
-resource "null_resource" "roxie_nsg_patch" {
-  count = var.enable_roxie ? 1 : 0
-
-  depends_on = [
-    null_resource.az,
-    helm_release.hpcc
-  ]
-
-  provisioner "local-exec" {
-    command     = "kubectl patch service eclqueries --patch '${local.hpcc_access_patch_str}'"
-    interpreter = local.is_windows_os ? ["PowerShell", "-Command"] : ["/bin/bash", "-c"]
-  }
-
-  triggers = {
-    content = local.hpcc_access_patch_str
   }
 }
