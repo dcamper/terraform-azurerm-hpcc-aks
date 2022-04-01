@@ -31,7 +31,7 @@ locals {
 
   node_pools = {
     system = {
-      vm_size                      = "Standard_B2s"
+      vm_size                      = "Standard_D4_v4"
       node_count                   = 1
       enable_auto_scaling          = true
       only_critical_addons_enabled = true
