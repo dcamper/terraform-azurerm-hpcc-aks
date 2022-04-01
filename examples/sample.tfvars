@@ -12,7 +12,7 @@ product_name="sample"
 # Only versions in nn.nn.nn format are supported.
 # Value type: string
 
-hpcc_version="8.2.20"
+hpcc_version="8.6.14"
 
 #------------------------------------------------------------------------------
 
