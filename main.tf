@@ -20,7 +20,7 @@ module "naming" {
 }
 
 module "metadata" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-metadata.git?ref=v1.5.1"
+  source = "github.com/Azure-Terraform/terraform-azurerm-metadata.git?ref=v1.5.2"
 
   naming_rules = module.naming.yaml
 
@@ -38,7 +38,7 @@ module "metadata" {
 }
 
 module "resource_group" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-resource-group.git?ref=v2.0.0"
+  source = "github.com/Azure-Terraform/terraform-azurerm-resource-group.git?ref=v2.1.0"
 
   unique_name = false
   location    = lower(var.azure_region)
@@ -47,7 +47,7 @@ module "resource_group" {
 }
 
 module "virtual_network" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-virtual-network.git?ref=v2.9.0"
+  source = "github.com/Azure-Terraform/terraform-azurerm-virtual-network.git?ref=v2.10.0"
 
   naming_rules = module.naming.yaml
 
@@ -74,6 +74,7 @@ module "virtual_network" {
 
   route_tables = {
     default = {
+      use_inline_routes = true
       disable_bgp_route_propagation = true
       routes = {
         internet = {
@@ -90,7 +91,7 @@ module "virtual_network" {
 }
 
 module "kubernetes" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.1"
+  source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.2"
 
   cluster_name        = local.aks_cluster_name
   location            = lower(var.azure_region)
@@ -119,9 +120,8 @@ module "kubernetes" {
     route_table_id = module.virtual_network.route_tables["default"].id
   }
 
+  default_node_pool = "system"
   node_pools = local.node_pools
-
-  default_node_pool = "system" //name of the sub-key, which is the default node pool.
 
   api_server_authorized_ip_ranges = local.admin_cidr_map
 
@@ -229,7 +229,7 @@ resource "azurerm_network_security_rule" "ingress_internet_admin" {
   priority                    = 100
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "tcp"
+  protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_ranges     = local.exposed_ports
   source_address_prefixes     = values(local.admin_cidr_map_bare)
@@ -246,7 +246,7 @@ resource "azurerm_network_security_rule" "ingress_internet_users" {
   priority                    = 110
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "tcp"
+  protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_ranges     = local.exposed_ports
   source_address_prefixes     = local.hpcc_user_ip_cidr_list
@@ -263,7 +263,7 @@ resource "azurerm_network_security_rule" "ingress_internet_all" {
   priority                    = 120
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "tcp"
+  protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_ranges     = local.exposed_ports
   source_address_prefix       = "Internet"
