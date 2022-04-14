@@ -122,10 +122,10 @@ variable "admin_username" {
 
 variable "azure_region" {
   type        = string
-  description = "REQUIRED.  The Azure region abbreviation in which to create these resources.\nMust be one of [\"eastus2\", \"centralus\"].\nExample entry: eastus2"
+  description = "REQUIRED.  The Azure region abbreviation in which to create these resources.\nMust be one of [\"eastus\", \"eastus2\", \"centralus\"].\nExample entry: eastus2"
   validation {
-    condition     = contains(["eastus2", "centralus"], var.azure_region)
-    error_message = "Value must be one of [\"eastus2\", \"centralus\"]."
+    condition     = contains(["eastus", "eastus2", "centralus"], var.azure_region)
+    error_message = "Value must be one of [\"eastus\", \"eastus2\", \"centralus\"]."
   }
 }
 

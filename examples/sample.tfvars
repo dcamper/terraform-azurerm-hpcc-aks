@@ -135,9 +135,9 @@ admin_username="jdoe"
 #------------------------------------------------------------------------------
 
 # The Azure region abbreviation in which to create these resources.
-# Must be one of ["eastus2", "centralus"].
+# Must be one of ["eastus", "eastus2", "centralus"].
 # Value type: string
-# Example entry: "eastus2"
+# Example entry: "eastus"
 
 azure_region="centralus"
 
