@@ -66,9 +66,9 @@ locals {
   ]
 
   storage_size = {
-      "dalishare"   = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["dalishare"].quota) : "10Gi"
-      "dllsshare"   = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["dllsshare"].quota) : "4Gi"
-      "sashashare"  = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["sashashare"].quota) : "2Gi"
+      "dalishare"   = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["dalishare"].quota) : "1000Gi"
+      "dllsshare"   = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["dllsshare"].quota) : "40Gi"
+      "sashashare"  = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["sashashare"].quota) : "20Gi"
       "datashare"   = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["datashare"].quota) : "${var.storage_data_gb}Gi"
       "lzshare"     = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["lzshare"].quota) : "${var.storage_lz_gb}Gi"
   }
