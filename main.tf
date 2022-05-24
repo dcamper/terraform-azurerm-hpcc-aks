@@ -58,45 +58,14 @@ module "virtual_network" {
 
   address_space = ["10.1.0.0/22"]
   
-  subnets = {
-    iaas-private = {
-      cidrs                      = ["10.1.2.0/24"]
-      route_table_association    = "default"
-      configure_nsg_rules        = false
-      service_endpoints          = ["Microsoft.Storage"]
-    }
-    iaas-public = {
-      cidrs                      = ["10.1.3.0/24"]
-      route_table_association    = "default"
-      configure_nsg_rules        = false
-    }
-  }
-  
-  route_tables = {
-    default = {
-      use_inline_routes = true
-      disable_bgp_route_propagation = true
-      routes = {
-        internet = {
-          address_prefix = "0.0.0.0/0"
-          next_hop_type  = "Internet"
-        }
-        local-vnet = {
-          address_prefix = "10.1.0.0/22"
-          next_hop_type  = "vnetlocal"
-        }
-      }
-    }
-  }
-  
   aks_subnets = {
     hpcc = {
       private = {
-        cidrs             = ["10.1.0.0/24"]
+        cidrs             = ["10.1.2.0/24"]
         service_endpoints = ["Microsoft.Storage"]
       }
       public = {
-        cidrs             = ["10.1.1.0/24"]
+        cidrs             = ["10.1.3.0/24"]
         service_endpoints = ["Microsoft.Storage"]
       }
       route_table = {
@@ -107,7 +76,7 @@ module "virtual_network" {
             next_hop_type  = "Internet"
           }
           local-vnet-10-1-0-0-21 = {
-            address_prefix = "10.1.0.0/22"
+            address_prefix = "10.1.0.0/16"
             next_hop_type  = "vnetlocal"
           }
         }
@@ -147,7 +116,7 @@ module "kubernetes" {
   }
 
   default_node_pool = "system"
-  node_pools = local.node_pools
+  node_pools = local.standard_node_pools
 
   api_server_authorized_ip_ranges = local.admin_cidr_map
 
@@ -247,6 +216,13 @@ resource "helm_release" "storage" {
 
 #------------------------------------------------------------------------------
 
+resource "azurerm_network_security_group" "hpcc_nsg" {
+  name                = local.hpcc_nsg_name
+  location            = lower(var.azure_region)
+  resource_group_name = module.resource_group.name
+  tags                = local.tags
+}
+
 # Add admin users to HPCC access if there is an explicit list of HPCC users defined
 resource "azurerm_network_security_rule" "ingress_internet_admin" {
   count = length(local.hpcc_user_ip_cidr_list) > 0 ? 1 : 0
@@ -260,8 +236,8 @@ resource "azurerm_network_security_rule" "ingress_internet_admin" {
   destination_port_ranges     = local.exposed_ports
   source_address_prefixes     = values(local.admin_cidr_map_bare)
   destination_address_prefix  = "*"
-  resource_group_name         = module.virtual_network.subnets.iaas-public.resource_group_name
-  network_security_group_name = module.virtual_network.subnets.iaas-public.network_security_group_name
+  resource_group_name         = module.resource_group.name
+  network_security_group_name = resource.azurerm_network_security_group.hpcc_nsg.name
 }
 
 # Add regular users to HPCC access if there is an explicit list of HPCC users defined
@@ -277,8 +253,8 @@ resource "azurerm_network_security_rule" "ingress_internet_users" {
   destination_port_ranges     = local.exposed_ports
   source_address_prefixes     = local.hpcc_user_ip_cidr_list
   destination_address_prefix  = "*"
-  resource_group_name         = module.virtual_network.subnets.iaas-public.resource_group_name
-  network_security_group_name = module.virtual_network.subnets.iaas-public.network_security_group_name
+  resource_group_name         = module.resource_group.name
+  network_security_group_name = resource.azurerm_network_security_group.hpcc_nsg.name
 }
 
 # Add public access to HPCC if there are no explicit HPCC users defined
@@ -294,8 +270,8 @@ resource "azurerm_network_security_rule" "ingress_internet_all" {
   destination_port_ranges     = local.exposed_ports
   source_address_prefix       = "Internet"
   destination_address_prefix  = "*"
-  resource_group_name         = module.virtual_network.subnets.iaas-public.resource_group_name
-  network_security_group_name = module.virtual_network.subnets.iaas-public.network_security_group_name
+  resource_group_name         = module.resource_group.name
+  network_security_group_name = resource.azurerm_network_security_group.hpcc_nsg.name
 }
 
 #------------------------------------------------------------------------------

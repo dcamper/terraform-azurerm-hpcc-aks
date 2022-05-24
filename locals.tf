@@ -26,10 +26,11 @@ locals {
   #----------------------------------------------------------------------------
 
   aks_cluster_name = lower("${local.names.resource_group_type}-${local.names.product_name}-terraform-${local.names.location}-${var.admin_username}-${terraform.workspace}")
+  hpcc_nsg_name = lower("${local.names.resource_group_type}-security-group")
 
   #----------------------------------------------------------------------------
 
-  node_pools = {
+  standard_node_pools = {
     system = {
       vm_size                      = "Standard_D4_v4"
       node_count                   = 1
