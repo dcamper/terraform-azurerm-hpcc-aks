@@ -181,18 +181,21 @@ resource "helm_release" "elk" {
 
   name                       = local.elk.name
   namespace                  = try(local.hpcc.namespace, terraform.workspace)
-  chart                      = local.elk_chart
-  values                     =[]
+  chart                      = local.elk.chart_name
+  repository                 = local.elk.chart_repo
+  version                    = null
+  values                     = [yamlencode(local.elk.expose)]
   create_namespace           = true
-  atomic                     = try(local.elk.atomic, null)
-  recreate_pods              = try(local.elk.recreate_pods, null)
-  cleanup_on_fail            = try(local.elk.cleanup_on_fail, null)
-  disable_openapi_validation = try(local.elk.disable_openapi_validation, null)
-  wait                       = try(local.elk.wait, null)
-  dependency_update          = try(local.elk.dependency_update, null)
-  timeout                    = try(local.elk.timeout, 600)
-  wait_for_jobs              = try(local.elk.wait_for_jobs, null)
-  lint                       = try(local.elk.lint, null)
+  atomic                     = try(local.elk.atomic, true)
+  recreate_pods              = try(local.elk.recreate_pods, false)
+  cleanup_on_fail            = try(local.elk.cleanup_on_fail, false)
+  disable_openapi_validation = try(local.elk.disable_openapi_validation, false)
+  wait                       = try(local.elk.wait, true)
+  max_history                = try(local.elk.max_historyt, 0)
+  dependency_update          = try(local.elk.dependency_update, true)
+  timeout                    = try(local.elk.timeout, 300)
+  wait_for_jobs              = try(local.elk.wait_for_jobs, false)
+  lint                       = try(local.elk.lint, false)
 }
 
 resource "helm_release" "storage" {
@@ -209,7 +212,7 @@ resource "helm_release" "storage" {
   disable_openapi_validation = null
   wait                       = null
   dependency_update          = null
-  timeout                    = 600
+  timeout                    = 300
   wait_for_jobs              = null
   lint                       = null
 }
@@ -233,7 +236,7 @@ resource "azurerm_network_security_rule" "ingress_internet_admin" {
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_ranges     = local.exposed_ports
+  destination_port_ranges     = local.exposed_ports_admin
   source_address_prefixes     = values(local.admin_cidr_map_bare)
   destination_address_prefix  = "*"
   resource_group_name         = module.resource_group.name
@@ -250,7 +253,7 @@ resource "azurerm_network_security_rule" "ingress_internet_users" {
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_ranges     = local.exposed_ports
+  destination_port_ranges     = local.exposed_ports_users
   source_address_prefixes     = local.hpcc_user_ip_cidr_list
   destination_address_prefix  = "*"
   resource_group_name         = module.resource_group.name
@@ -267,7 +270,7 @@ resource "azurerm_network_security_rule" "ingress_internet_all" {
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_ranges     = local.exposed_ports
+  destination_port_ranges     = local.exposed_ports_users
   source_address_prefix       = "Internet"
   destination_address_prefix  = "*"
   resource_group_name         = module.resource_group.name

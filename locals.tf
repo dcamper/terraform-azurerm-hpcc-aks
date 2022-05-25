@@ -26,7 +26,7 @@ locals {
   #----------------------------------------------------------------------------
 
   aks_cluster_name = lower("${local.names.resource_group_type}-${local.names.product_name}-terraform-${local.names.location}-${var.admin_username}-${terraform.workspace}")
-  hpcc_nsg_name = lower("${local.names.resource_group_type}-security-group")
+  hpcc_nsg_name = lower("${local.names.resource_group_type}-${local.names.product_name}-security-group")
 
   #----------------------------------------------------------------------------
 
@@ -76,9 +76,8 @@ locals {
 
   #----------------------------------------------------------------------------
 
-  hpcc_chart    = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-${var.hpcc_version}.tgz"
-  storage_chart = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
-  elk_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/elastic4hpcclogs-1.0.0.tgz"
+  hpcc_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-${var.hpcc_version}.tgz"
+  storage_chart  = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
 
   #----------------------------------------------------------------------------
 
@@ -266,7 +265,19 @@ locals {
   #----------------------------------------------------------------------------
 
   elk = {
-    name   = "${local.metadata.product_name}-elk"
+    name       = "${local.metadata.product_name}-elk"
+    chart_repo = "https://hpcc-systems.github.io/helm-chart"
+    chart_name = "elastic4hpcclogs"
+
+    expose     = {
+      kibana = {
+        service = {
+          annotations = {
+            "service.beta.kubernetes.io/azure-load-balancer-internal" = "false"
+          }
+        }
+      }
+    }
   }
 
   #----------------------------------------------------------------------------
@@ -306,9 +317,14 @@ locals {
 
   #----------------------------------------------------------------------------
 
-  exposed_ports = concat(
+  exposed_ports_admin = concat(
     [tostring(local.hpcc.ecl_watch_port)],
     var.enable_elk ? [tostring(local.hpcc.elk_port)] : [],
+    var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
+  )
+
+  exposed_ports_users = concat(
+    [tostring(local.hpcc.ecl_watch_port)],
     var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
   )
 
