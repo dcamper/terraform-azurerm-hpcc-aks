@@ -193,7 +193,7 @@ resource "helm_release" "elk" {
   wait                       = try(local.elk.wait, true)
   max_history                = try(local.elk.max_historyt, 0)
   dependency_update          = try(local.elk.dependency_update, true)
-  timeout                    = try(local.elk.timeout, 300)
+  timeout                    = try(local.elk.timeout, 600)
   wait_for_jobs              = try(local.elk.wait_for_jobs, false)
   lint                       = try(local.elk.lint, false)
 }
@@ -212,7 +212,7 @@ resource "helm_release" "storage" {
   disable_openapi_validation = null
   wait                       = null
   dependency_update          = null
-  timeout                    = 300
+  timeout                    = 600
   wait_for_jobs              = null
   lint                       = null
 }
