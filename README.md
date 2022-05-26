@@ -78,7 +78,7 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 |Option|Type|Description|
 |:-----|:---|:----------|
 | `product_name` | string | Abbreviated product name, suitable for use in Azure naming. Must be 2-23 characters in length, all lowercase or numeric characters. |
-| `hpcc_version` | string | The version of HPCC Systems to install. Only versions in nn.nn.nn format are supported. |
+| `hpcc_version` | string | The version of HPCC Systems to install. Only versions in nn.nn.nn format are supported, and the version must be 8.6.0 or higher. |
 | `enable_roxie` | boolean | Enable ROXIE? This will also expose port 8002 on the cluster. |
 | `enable_elk` | boolean  | Enable ELK (Elasticsearch, Logstash, and Kibana) Stack? This will also expose port 5601 on the cluster. |
 | `enable_rbac_ad` | boolean  | Enable RBAC and AD integration for AKS? This provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings). Recommended value: true |

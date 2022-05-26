@@ -16,8 +16,8 @@ variable "hpcc_version" {
   description = "REQUIRED.  The version of HPCC Systems to install.\nOnly versions in nn.nn.nn format are supported."
   type        = string
   validation {
-    condition     = length(regexall("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}", var.hpcc_version)) == 1
-    error_message = "Value must be in nn.nn.nn format."
+    condition     = length(regexall("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}", var.hpcc_version)) == 1 && (regex("^(\\d{1,3})\\.", var.hpcc_version)[0] > 8 || (regex("^(\\d{1,3})\\.", var.hpcc_version)[0] == "8" && regex("^\\d{1,3}\\.(\\d{1,3})\\.", var.hpcc_version)[0] >= 6))
+    error_message = "Value must be in nn.nn.nn format and 8.6.0 or higher."
   }
 }
 
