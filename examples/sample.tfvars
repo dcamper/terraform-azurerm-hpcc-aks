@@ -179,3 +179,13 @@ storage_account_name=""
 # Value type: string
 
 storage_account_resource_group_name=""
+
+#==============================================================================
+# Optional settings
+#==============================================================================
+
+# The global image name of the HPCC docker image to deploy.
+# Must be one of ["platform-core", "platform-ml", "platform-gnn"].
+# Default value: platform-core
+
+# hpcc_image_name="platform-core"

@@ -152,3 +152,17 @@ variable "storage_account_resource_group_name" {
   description = "OPTIONAL.  If you are attaching to an existing storage account, enter its resource group name here.\nLeave blank if you do not have a storage account.\nIf you enter something here then you must also enter a name for the storage account."
   default     = ""
 }
+
+###############################################################################
+# Optional variables
+###############################################################################
+
+variable "hpcc_image_name" {
+  type        = string
+  description = "REQUIRED.  The global image name of the HPCC docker image to deploy.\nMust be one of [\"platform-core\", \"platform-ml\", \"platform-gnn\"].\nDefault value: platform-core"
+  default     = "platform-core"
+  validation {
+    condition     = contains(["platform-core", "platform-ml", "platform-gnn"], var.hpcc_image_name)
+    error_message = "Value must be one of [\"platform-core\", \"platform-ml\", \"platform-gnn\"]."
+  }
+}

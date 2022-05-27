@@ -174,6 +174,14 @@ resource "helm_release" "hpcc" {
     try([for v in local.hpcc.values : file(v)], []),
     [yamlencode(local.hpcc.chart_values)]
   )
+
+  dynamic "set" {
+    for_each = can(var.hpcc_image_name) ? [1] : []
+    content {
+      name  = "global.image.name"
+      value = var.hpcc_image_name
+    }
+  }
 }
 
 resource "helm_release" "elk" {
