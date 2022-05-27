@@ -317,15 +317,14 @@ locals {
 
   #----------------------------------------------------------------------------
 
-  exposed_ports_admin = concat(
-    [tostring(local.hpcc.ecl_watch_port)],
-    var.enable_elk ? [tostring(local.hpcc.elk_port)] : [],
-    var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
-  )
-
   exposed_ports_users = concat(
     [tostring(local.hpcc.ecl_watch_port)],
     var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
+  )
+
+  exposed_ports_admin = concat(
+    local.exposed_ports_users,
+    var.enable_elk ? [tostring(local.hpcc.elk_port)] : []
   )
 
   #----------------------------------------------------------------------------
