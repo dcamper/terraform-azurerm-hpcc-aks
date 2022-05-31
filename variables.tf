@@ -166,3 +166,13 @@ variable "hpcc_image_name" {
     error_message = "Value must be one of [\"platform-core\", \"platform-ml\", \"platform-gnn\"]."
   }
 }
+
+variable "hpcc_namespace" {
+  type        = string
+  description = "REQUIRED.  The Kubernetes namespace in which to install the HPCC and ELK modules (if enabled).\nDefault value: default"
+  default     = "default"
+  validation {
+    condition     = var.hpcc_namespace != ""
+    error_message = "Namespace must be a non-empty string."
+  }
+}

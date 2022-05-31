@@ -189,3 +189,10 @@ storage_account_resource_group_name=""
 # Default value: platform-core
 
 # hpcc_image_name="platform-core"
+
+#------------------------------------------------------------------------------
+
+# The Kubernetes namespace in which to install the HPCC and ELK modules (if enabled).
+# Default value: default
+
+# hpcc_namespace="default"

@@ -83,7 +83,7 @@ locals {
 
   hpcc = {
     version        = var.hpcc_version
-    namespace      = "default"
+    namespace      = var.hpcc_namespace
     name           = "${local.metadata.product_name}-hpcc"
 
     values         = concat(
