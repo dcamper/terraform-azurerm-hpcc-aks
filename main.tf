@@ -57,7 +57,7 @@ module "virtual_network" {
   tags                = local.tags
 
   address_space = ["10.1.0.0/22"]
-  
+
   aks_subnets = {
     hpcc = {
       private = {
@@ -122,17 +122,36 @@ module "kubernetes" {
 
 }
 
+#------------------------------------------------------------------------------
+
 resource "kubernetes_secret" "sa_secret" {
   count = local.has_storage_account ? 1 : 0
 
   metadata {
-    name = "azure-secret"
+    name      = "azure-secret"
+    namespace = "default"
   }
 
-  data = local.has_storage_account ? {
-    azurestorageaccountname = lower(var.storage_account_name)
+  data = {
+    azurestorageaccountname = lower(data.azurerm_storage_account.hpccsa[0].name)
     azurestorageaccountkey  = data.azurerm_storage_account.hpccsa[0].primary_access_key
-  } : {}
+  }
+
+  type = "Opaque"
+}
+
+resource "kubernetes_secret" "premium_sa_secret" {
+  count = local.has_premium_storage ? 1 : 0
+
+  metadata {
+    name      = "azure-secret-premium"
+    namespace = "default"
+  }
+
+  data = {
+    azurestorageaccountname = lower(data.azurerm_storage_account.hpccsa_premium[0].name)
+    azurestorageaccountkey  = data.azurerm_storage_account.hpccsa_premium[0].primary_access_key
+  }
 
   type = "Opaque"
 }
@@ -142,7 +161,14 @@ resource "kubernetes_secret" "sa_secret" {
 data "azurerm_storage_share" "existing_storage" {
   for_each = toset(local.has_storage_account ? local.storage_share_names : [])
 
-  storage_account_name = var.storage_account_name
+  storage_account_name = data.azurerm_storage_account.hpccsa[0].name
+  name                 = each.key
+}
+
+data "azurerm_storage_share" "premium_existing_storage" {
+  for_each = toset(local.has_premium_storage ? local.premium_storage_share_names : [])
+
+  storage_account_name = data.azurerm_storage_account.hpccsa_premium[0].name
   name                 = each.key
 }
 
@@ -170,7 +196,7 @@ resource "helm_release" "hpcc" {
   lint                       = try(local.hpcc.lint, null)
 
   values = concat(
-    local.has_storage_account ? [yamlencode(local.hpcc.storage_sa2)] : [yamlencode(local.hpcc.storage_pvc)],
+    local.has_storage_account ? [yamlencode(local.hpcc.storage_sa_pvc)] : [yamlencode(local.hpcc.storage_pvc)],
     try([for v in local.hpcc.values : file(v)], []),
     [yamlencode(local.hpcc.chart_values)]
   )
@@ -211,7 +237,7 @@ resource "helm_release" "storage" {
 
   name                       = "azstorage"
   chart                      = local.storage_chart
-  values                     = [yamlencode(local.hpcc.storage_sa1)]
+  values                     = [yamlencode(local.hpcc.storage_sa_pv)]
   create_namespace           = true
   namespace                  = try(local.hpcc.namespace, terraform.workspace)
   atomic                     = null

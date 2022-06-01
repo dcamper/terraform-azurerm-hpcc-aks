@@ -176,3 +176,9 @@ variable "hpcc_namespace" {
     error_message = "Namespace must be a non-empty string."
   }
 }
+
+variable "enable_premium_storage" {
+  type        = bool
+  description = "OPTIONAL.  If true, premium ($$$) storage will be used for the following storage shares: Dali.\nDefaults to false."
+  default     = false
+}

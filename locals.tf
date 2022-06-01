@@ -16,10 +16,11 @@ locals {
   #----------------------------------------------------------------------------
 
   enforced_tags = {
-    "admin" = var.admin_name
-    "email" = lower(var.admin_email)
-    "owner" = var.admin_name
-    "owner_email" = lower(var.admin_email)
+    "admin"                      = var.admin_name
+    "email"                      = lower(var.admin_email)
+    "owner"                      = var.admin_name
+    "owner_email"                = lower(var.admin_email)
+    "last_modified_terraform"    = formatdate("DD MMM YYYY hh:mm ZZZ", timestamp())
   }
   tags = merge(module.metadata.tags, local.enforced_tags, try(var.extra_tags, {}))
 
@@ -57,21 +58,25 @@ locals {
   #----------------------------------------------------------------------------
 
   has_storage_account = try(var.storage_account_name, "") != "" && try(var.storage_account_resource_group_name, "") != ""
+  has_premium_storage = local.has_storage_account && var.enable_premium_storage
 
-  storage_share_names = [
-    "dalishare",
-    "dllsshare",
-    "sashashare",
-    "datashare",
-    "lzshare"
-  ]
+  storage_share_names = concat(
+    local.has_premium_storage ? [] : ["dalishare"],
+    [
+      "dllsshare",
+      "sashashare",
+      "datashare",
+      "lzshare"
+    ])
+
+  premium_storage_share_names = local.has_premium_storage ? ["dalishare"] : []
 
   storage_size = {
-      "dalishare"   = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["dalishare"].quota) : "1000Gi"
-      "dllsshare"   = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["dllsshare"].quota) : "40Gi"
-      "sashashare"  = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["sashashare"].quota) : "20Gi"
-      "datashare"   = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["datashare"].quota) : "${var.storage_data_gb}Gi"
-      "lzshare"     = local.has_storage_account ? format("%dGi", data.azurerm_storage_share.existing_storage["lzshare"].quota) : "${var.storage_lz_gb}Gi"
+      "dalishare"   = format("%dGi", local.has_premium_storage ? data.azurerm_storage_share.premium_existing_storage["dalishare"].quota : local.has_storage_account? data.azurerm_storage_share.existing_storage["dalishare"].quota : 250)
+      "dllsshare"   = format("%dGi", local.has_storage_account? data.azurerm_storage_share.existing_storage["dllsshare"].quota : 40)
+      "sashashare"  = format("%dGi", local.has_storage_account? data.azurerm_storage_share.existing_storage["sashashare"].quota : 20)
+      "datashare"   = format("%dGi", local.has_storage_account? data.azurerm_storage_share.existing_storage["datashare"].quota : var.storage_data_gb)
+      "lzshare"     = format("%dGi", local.has_storage_account? data.azurerm_storage_share.existing_storage["lzshare"].quota : var.storage_lz_gb)
   }
 
   #----------------------------------------------------------------------------
@@ -162,61 +167,63 @@ locals {
       }
     }
 
-    storage_sa1 = {
+    storage_sa_pv = {
       common = {
-        mountPrefix     = "/var/lib/HPCCSystems"
-        secretName      = "azure-secret"
-        secretNamespace = "default"
+        mountPrefix       = "/var/lib/HPCCSystems"
+        provisioner       = "file.csi.azure.com"
+        secretNamespace   = "default"
+		secretName        = "azure-secret"
       },
       planes = [
         {
-          name      = "dali"
-          subPath   = "dalistorage"
-          size      = local.storage_size["dalishare"]
-          category  = "dali"
-          sku       = "Standard_LRS"
-          shareName = "dalishare"
+          name            = "dali"
+          subPath         = "dalistorage"
+          size            = local.storage_size["dalishare"]
+          category        = "dali"
+          sku             = local.has_premium_storage ? "Premium_LRS" : "Standard_LRS"
+          shareName       = "dalishare"
+		  secretName      = local.has_premium_storage ? "azure-secret-premium" : "azure-secret"
         },
         {
-          name      = "dll"
-          subPath   = "queries"
-          size      = local.storage_size["dllsshare"]
-          category  = "dll"
-          rwmany    = true
-          sku       = "Standard_LRS"
-          shareName = "dllsshare"
+          name            = "dll"
+          subPath         = "queries"
+          size            = local.storage_size["dllsshare"]
+          category        = "dll"
+          rwmany          = true
+          sku             = "Standard_LRS"
+          shareName       = "dllsshare"
         },
         {
-          name      = "sasha"
-          subPath   = "sasha"
-          size      = local.storage_size["sashashare"]
-          rwmany    = true
-          category  = "sasha"
-          sku       = "Standard_LRS"
-          shareName = "sashashare"
+          name            = "sasha"
+          subPath         = "sasha"
+          size            = local.storage_size["sashashare"]
+          rwmany          = true
+          category        = "sasha"
+          sku             = "Standard_LRS"
+          shareName       = "sashashare"
         },
         {
-          name      = "data"
-          subPath   = "hpcc-data"
-          size      = local.storage_size["datashare"]
-          category  = "data"
-          rwmany    = true
-          sku       = "Standard_LRS"
-          shareName = "datashare"
+          name            = "data"
+          subPath         = "hpcc-data"
+          size            = local.storage_size["datashare"]
+          category        = "data"
+          rwmany          = true
+          sku             = "Standard_LRS"
+          shareName       = "datashare"
         },
         {
-          name      = "mydropzone"
-          subPath   = "dropzone"
-          size      = local.storage_size["lzshare"]
-          rwmany    = true
-          category  = "lz"
-          sku       = "Standard_LRS"
-          shareName = "lzshare"
+          name            = "mydropzone"
+          subPath         = "dropzone"
+          size            = local.storage_size["lzshare"]
+          rwmany          = true
+          category        = "lz"
+          sku             = "Standard_LRS"
+          shareName       = "lzshare"
         }
       ]
     }
 
-    storage_sa2 = {
+    storage_sa_pvc = {
       storage = {
         planes = [
           {

@@ -196,3 +196,10 @@ storage_account_resource_group_name=""
 # Default value: default
 
 # hpcc_namespace="default"
+
+#------------------------------------------------------------------------------
+
+# If true, premium ($$$) storage will be used for the following storage shares: Dali.
+# OPTIONAL, defaults to false.
+
+enable_premium_storage=false

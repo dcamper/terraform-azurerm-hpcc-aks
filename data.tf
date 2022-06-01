@@ -17,6 +17,12 @@ data "azurerm_subscription" "current" {
 
 data "azurerm_storage_account" "hpccsa" {
   count = local.has_storage_account ? 1 : 0
-  name                = local.has_storage_account ? var.storage_account_name : "placeholder"
-  resource_group_name = local.has_storage_account ? var.storage_account_resource_group_name : "placeholder"
+  name                = var.storage_account_name
+  resource_group_name = var.storage_account_resource_group_name
+}
+
+data "azurerm_storage_account" "hpccsa_premium" {
+  count = local.has_premium_storage ? 1 : 0
+  name                = "${var.storage_account_name}premium"
+  resource_group_name = var.storage_account_resource_group_name
 }
