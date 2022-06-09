@@ -158,22 +158,6 @@ resource "kubernetes_secret" "premium_sa_secret" {
 
 #------------------------------------------------------------------------------
 
-data "azurerm_storage_share" "existing_storage" {
-  for_each = toset(local.has_storage_account ? local.storage_share_names : [])
-
-  storage_account_name = data.azurerm_storage_account.hpccsa[0].name
-  name                 = each.key
-}
-
-data "azurerm_storage_share" "premium_existing_storage" {
-  for_each = toset(local.has_premium_storage ? local.premium_storage_share_names : [])
-
-  storage_account_name = data.azurerm_storage_account.hpccsa_premium[0].name
-  name                 = each.key
-}
-
-#------------------------------------------------------------------------------
-
 resource "helm_release" "hpcc" {
   depends_on = [
     module.kubernetes
@@ -235,7 +219,7 @@ resource "helm_release" "elk" {
 resource "helm_release" "storage" {
   count = local.has_storage_account ? 1 : 0
 
-  name                       = "azstorage"
+  name                       = local.storage_name
   chart                      = local.storage_chart
   values                     = [yamlencode(local.hpcc.storage_sa_pv)]
   create_namespace           = true

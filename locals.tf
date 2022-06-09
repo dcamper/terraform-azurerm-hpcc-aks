@@ -72,7 +72,7 @@ locals {
   premium_storage_share_names = local.has_premium_storage ? ["dalishare"] : []
 
   storage_size = {
-      "dalishare"   = format("%dGi", local.has_premium_storage ? data.azurerm_storage_share.premium_existing_storage["dalishare"].quota : local.has_storage_account? data.azurerm_storage_share.existing_storage["dalishare"].quota : 250)
+      "dalishare"   = format("%dGi", local.has_premium_storage ? data.azurerm_storage_share.existing_storage_premium["dalishare"].quota : local.has_storage_account? data.azurerm_storage_share.existing_storage["dalishare"].quota : 250)
       "dllsshare"   = format("%dGi", local.has_storage_account? data.azurerm_storage_share.existing_storage["dllsshare"].quota : 40)
       "sashashare"  = format("%dGi", local.has_storage_account? data.azurerm_storage_share.existing_storage["sashashare"].quota : 20)
       "datashare"   = format("%dGi", local.has_storage_account? data.azurerm_storage_share.existing_storage["datashare"].quota : var.storage_data_gb)
@@ -82,7 +82,9 @@ locals {
   #----------------------------------------------------------------------------
 
   hpcc_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-${var.hpcc_version}.tgz"
-  storage_chart  = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
+#  storage_chart  = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
+  storage_chart  = "${path.module}/customizations/hpcc-azurefile"
+  storage_name   = "${local.metadata.product_name}-storage"
 
   #----------------------------------------------------------------------------
 
@@ -92,13 +94,13 @@ locals {
     name           = "${local.metadata.product_name}-hpcc"
 
     values         = concat(
-      ["./customizations/placements.yaml"],
-      [var.enable_roxie ? "./customizations/esp-roxie.yaml" : "./customizations/esp.yaml"],
-      ["./customizations/eclcc.yaml"],
-      ["./customizations/thor.yaml"],
-      ["./customizations/hthor.yaml"],
-      [var.enable_roxie ? "./customizations/roxie-on.yaml" : "./customizations/roxie-off.yaml"],
-      var.enable_code_security ? ["./customizations/security.yaml"] : []
+      ["${path.module}/customizations/placements.yaml"],
+      [var.enable_roxie ? "${path.module}/customizations/esp-roxie.yaml" : "${path.module}/customizations/esp.yaml"],
+      ["${path.module}/customizations/eclcc.yaml"],
+      ["${path.module}/customizations/thor.yaml"],
+      ["${path.module}/customizations/hthor.yaml"],
+      [var.enable_roxie ? "${path.module}/customizations/roxie-on.yaml" : "${path.module}/customizations/roxie-off.yaml"],
+      var.enable_code_security ? ["${path.module}/customizations/security.yaml"] : []
     )
 
     ecl_watch_port = 8010
