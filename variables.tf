@@ -136,7 +136,7 @@ variable "admin_ip_cidr_map" {
 }
 
 variable "hpcc_user_ip_cidr_list" {
-  description = "OPTIONAL.  List of additional CIDR addresses that can access this HPCC Systems cluster.\nDefault value is '[]' which means no CIDR addresses, enter '[]'."
+  description = "OPTIONAL.  List of additional CIDR addresses that can access this HPCC Systems cluster.\nDefault value is '[]' which means no CIDR addresses."
   type        = list(string)
   default     = []
 }
