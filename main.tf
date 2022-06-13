@@ -230,7 +230,7 @@ resource "helm_release" "storage" {
   disable_openapi_validation = null
   wait                       = null
   dependency_update          = null
-  timeout                    = 600
+  timeout                    = 300
   wait_for_jobs              = null
   lint                       = null
 }
