@@ -84,7 +84,6 @@ locals {
   hpcc_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-${var.hpcc_version}.tgz"
  # storage_chart  = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
   storage_chart  = "${path.module}/customizations/hpcc-azurefile"
-  storage_name   = "${local.metadata.product_name}-storage"
 
   #----------------------------------------------------------------------------
 
@@ -173,8 +172,6 @@ locals {
       common = {
         mountPrefix       = "/var/lib/HPCCSystems"
         provisioner       = "file.csi.azure.com"
-        secretNamespace   = "default"
-		secretName        = "azure-secret"
       },
       planes = [
         {
@@ -185,6 +182,7 @@ locals {
           sku             = local.has_premium_storage ? "Premium_LRS" : "Standard_LRS"
           shareName       = "dalishare"
 		  secretName      = local.has_premium_storage ? "azure-secret-premium" : "azure-secret"
+		  secretNamespace = "default"
         },
         {
           name            = "dll"
@@ -194,6 +192,8 @@ locals {
           rwmany          = true
           sku             = "Standard_LRS"
           shareName       = "dllsshare"
+		  secretName      = "azure-secret"
+		  secretNamespace = "default"
         },
         {
           name            = "sasha"
@@ -203,6 +203,8 @@ locals {
           category        = "sasha"
           sku             = "Standard_LRS"
           shareName       = "sashashare"
+		  secretName      = "azure-secret"
+		  secretNamespace = "default"
         },
         {
           name            = "data"
@@ -212,6 +214,8 @@ locals {
           rwmany          = true
           sku             = "Standard_LRS"
           shareName       = "datashare"
+		  secretName      = "azure-secret"
+		  secretNamespace = "default"
         },
         {
           name            = "mydropzone"
@@ -221,6 +225,8 @@ locals {
           category        = "lz"
           sku             = "Standard_LRS"
           shareName       = "lzshare"
+		  secretName      = "azure-secret"
+		  secretNamespace = "default"
         }
       ]
     }

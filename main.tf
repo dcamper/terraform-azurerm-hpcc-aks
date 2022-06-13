@@ -175,7 +175,7 @@ resource "helm_release" "hpcc" {
   disable_openapi_validation = try(local.hpcc.disable_openapi_validation, null)
   wait                       = try(local.hpcc.wait, null)
   dependency_update          = try(local.hpcc.dependency_update, null)
-  timeout                    = try(local.hpcc.timeout, 900)
+  timeout                    = try(local.hpcc.timeout, 600)
   wait_for_jobs              = try(local.hpcc.wait_for_jobs, null)
   lint                       = try(local.hpcc.lint, null)
 
@@ -219,7 +219,7 @@ resource "helm_release" "elk" {
 resource "helm_release" "storage" {
   count = local.has_storage_account ? 1 : 0
 
-  name                       = local.storage_name
+  name                       = "${local.metadata.product_name}-storage"
   chart                      = local.storage_chart
   values                     = [yamlencode(local.hpcc.storage_sa_pv)]
   create_namespace           = true
