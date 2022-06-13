@@ -155,8 +155,8 @@ admin_ip_cidr_map={}
 #------------------------------------------------------------------------------
 
 # List of explicit CIDR addresses that can access this HPCC Systems cluster.
-# To allow public access, specify no values.
-# To add no CIDR addresses, enter '[]'.
+# To allow public access, specify "0.0.0.0/0".
+# To add no CIDR addresses, use '[]'.
 # Value type: list of string
 
 hpcc_user_ip_cidr_list=[]
