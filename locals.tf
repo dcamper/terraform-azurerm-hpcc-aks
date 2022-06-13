@@ -20,7 +20,6 @@ locals {
     "email"                      = lower(var.admin_email)
     "owner"                      = var.admin_name
     "owner_email"                = lower(var.admin_email)
-    "last_modified_terraform"    = formatdate("DD MMM YYYY hh:mm ZZZ", timestamp())
   }
   tags = merge(module.metadata.tags, local.enforced_tags, try(var.extra_tags, {}))
 
