@@ -219,7 +219,7 @@ resource "helm_release" "elk" {
 resource "helm_release" "storage" {
   count = local.has_storage_account ? 1 : 0
 
-  name                       = "${local.metadata.product_name}-storage"
+  name                       = "azstorage"
   chart                      = local.storage_chart
   values                     = [yamlencode(local.hpcc.storage_sa_pv)]
   create_namespace           = true
