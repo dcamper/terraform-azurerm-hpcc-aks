@@ -82,7 +82,7 @@ locals {
   #----------------------------------------------------------------------------
 
   hpcc_chart     = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-${var.hpcc_version}.tgz"
-#  storage_chart  = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
+ # storage_chart  = "https://github.com/hpcc-systems/helm-chart/raw/master/docs/hpcc-azurefile-0.1.0.tgz"
   storage_chart  = "${path.module}/customizations/hpcc-azurefile"
   storage_name   = "${local.metadata.product_name}-storage"
 
