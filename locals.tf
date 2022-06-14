@@ -198,8 +198,8 @@ locals {
           name            = "sasha"
           subPath         = "sasha"
           size            = local.storage_size["sashashare"]
-          rwmany          = true
           category        = "sasha"
+          rwmany          = true
           sku             = "Standard_LRS"
           shareName       = "sashashare"
 		  secretName      = "azure-secret"
