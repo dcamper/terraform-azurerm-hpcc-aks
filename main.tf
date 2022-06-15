@@ -175,7 +175,7 @@ resource "helm_release" "hpcc" {
   disable_openapi_validation = try(local.hpcc.disable_openapi_validation, null)
   wait                       = try(local.hpcc.wait, null)
   dependency_update          = try(local.hpcc.dependency_update, null)
-  timeout                    = try(local.hpcc.timeout, 600)
+  timeout                    = try(local.hpcc.timeout, 300)
   wait_for_jobs              = try(local.hpcc.wait_for_jobs, null)
   lint                       = try(local.hpcc.lint, null)
 
@@ -211,7 +211,7 @@ resource "helm_release" "elk" {
   wait                       = try(local.elk.wait, true)
   max_history                = try(local.elk.max_historyt, 0)
   dependency_update          = try(local.elk.dependency_update, true)
-  timeout                    = try(local.elk.timeout, 600)
+  timeout                    = try(local.elk.timeout, 300)
   wait_for_jobs              = try(local.elk.wait_for_jobs, false)
   lint                       = try(local.elk.lint, false)
 }
