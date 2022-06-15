@@ -180,8 +180,8 @@ locals {
           category        = "dali"
           sku             = local.has_premium_storage ? "Premium_LRS" : "Standard_LRS"
           shareName       = "dalishare"
-		  secretName      = local.has_premium_storage ? "azure-secret-premium" : "azure-secret"
-		  secretNamespace = "default"
+          secretName      = local.has_premium_storage ? "azure-secret-premium" : "azure-secret"
+          secretNamespace = "default"
         },
         {
           name            = "dll"
@@ -191,8 +191,8 @@ locals {
           rwmany          = true
           sku             = "Standard_LRS"
           shareName       = "dllsshare"
-		  secretName      = "azure-secret"
-		  secretNamespace = "default"
+          secretName      = "azure-secret"
+          secretNamespace = "default"
         },
         {
           name            = "sasha"
@@ -202,8 +202,8 @@ locals {
           rwmany          = true
           sku             = "Standard_LRS"
           shareName       = "sashashare"
-		  secretName      = "azure-secret"
-		  secretNamespace = "default"
+          secretName      = "azure-secret"
+          secretNamespace = "default"
         },
         {
           name            = "data"
@@ -213,8 +213,8 @@ locals {
           rwmany          = true
           sku             = "Standard_LRS"
           shareName       = "datashare"
-		  secretName      = "azure-secret"
-		  secretNamespace = "default"
+          secretName      = "azure-secret"
+          secretNamespace = "default"
         },
         {
           name            = "mydropzone"
@@ -224,8 +224,8 @@ locals {
           category        = "lz"
           sku             = "Standard_LRS"
           shareName       = "lzshare"
-		  secretName      = "azure-secret"
-		  secretNamespace = "default"
+          secretName      = "azure-secret"
+          secretNamespace = "default"
         }
       ]
     }
