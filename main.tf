@@ -246,7 +246,7 @@ resource "azurerm_network_security_group" "hpcc_nsg" {
 
 # Add admin users to HPCC access if there is an explicit list of HPCC users defined
 resource "azurerm_network_security_rule" "ingress_internet_admin" {
-  count = length(local.hpcc_user_ip_cidr_list) > 0 ? 1 : 0
+  count = length(local.admin_cidr_map_bare) > 0 ? 1 : 0
 
   name                        = "HPCC_Admin"
   priority                    = 100
