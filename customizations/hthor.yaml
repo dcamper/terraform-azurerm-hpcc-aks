@@ -3,5 +3,5 @@ eclagent:
   replicas: 1
   maxActive: 4
   prefix: hthor
-  useChildProcesses: true
+  useChildProcesses: false
   type: hthor
