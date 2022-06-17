@@ -335,9 +335,11 @@ locals {
     var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
   )
 
+  exposed_ports_admin_only = var.enable_elk ? [tostring(local.hpcc.elk_port)] : []
+
   exposed_ports_admin = concat(
     local.exposed_ports_users,
-    var.enable_elk ? [tostring(local.hpcc.elk_port)] : []
+    local.exposed_ports_admin_only
   )
 
   #----------------------------------------------------------------------------
