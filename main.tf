@@ -251,19 +251,18 @@ resource "helm_release" "storage" {
 # network security group, so we can then make modifications to it.  It is
 # probably fragile.
 
-# Grab information about the internal NSG in the MC_* resource group
-data "azurerm_resources" "nsg_list" {
+# Wait until there is a Microsoft.Network/networkSecurityGroups resource
+data "external" "nsg_exists" {
   depends_on = [
     helm_release.hpcc
   ]
 
-  resource_group_name = module.kubernetes.node_resource_group
-  type                = "Microsoft.Network/networkSecurityGroups"
+  program = ["${path.module}/wait_for_nsg.sh", "${module.subscription.output.subscription_id}", "${module.kubernetes.node_resource_group}"]
 }
 
 # Load the information from the NSG
 data "azurerm_network_security_group" "k8s_nsg" {
-  name                = data.azurerm_resources.nsg_list.resources.0.name
+  name                = data.external.nsg_exists.result["nsg"]
   resource_group_name = module.kubernetes.node_resource_group
 }
 
