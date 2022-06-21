@@ -346,6 +346,7 @@ resource "azurerm_network_security_rule" "ingress_internet_users_deny" {
 
 # Deny all everyone else to admit ports
 resource "azurerm_network_security_rule" "ingress_internet_admin_deny" {
+  count = length(local.exposed_ports_admin_only) > 0 ? 1 : 0
 
   name                        = "HPCC_Admin_Deny_others"
   priority                    = 210
