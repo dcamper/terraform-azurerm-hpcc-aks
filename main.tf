@@ -253,7 +253,7 @@ resource "helm_release" "storage" {
 
 # Choose OS-specific script for finding Network Security Group
 locals {
-  wait_for_nsg_app_items = local.is_windows_os ? ["PowerShell", "${path.module}/helpers/wait_for_nsg.ps1"] : ["${path.module}/helpers/wait_for_nsg.sh"]
+  wait_for_nsg_app_items = local.is_windows_os ? ["PowerShell.exe", "${path.module}/helpers/wait_for_nsg.ps1"] : ["${path.module}/helpers/wait_for_nsg.sh"]
 }
 
 # Wait until there is a Microsoft.Network/networkSecurityGroups resource
