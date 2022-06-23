@@ -307,7 +307,7 @@ locals {
 
   # Check to see if user's IP address is in a default admin CIDR
   admin_overlap_test = [
-    for s in values(local.default_admin_ip_cidr_maps)
+    for s in values(merge(local.default_admin_ip_cidr_maps, try(var.admin_ip_cidr_map, {})))
       : cidrsubnet("${local.host_ip}/${regex("/(\\d{1,2})$", s)[0]}", 0, 0) == s
   ]
   admin_overlaps = anytrue(local.admin_overlap_test)
