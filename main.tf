@@ -253,7 +253,7 @@ resource "helm_release" "storage" {
 
 # Choose OS-specific script for finding Network Security Group
 locals {
-  wait_for_nsg = local.is_windows_os ? "wait_for_nsg.ps1" : "wait_for_nsg.sh"
+  wait_for_nsg_app_items = local.is_windows_os ? ["PowerShell", "${path.module}\helpers\wait_for_nsg.ps1"] : ["${path.module}/helpers/wait_for_nsg.sh"]
 }
 
 # Wait until there is a Microsoft.Network/networkSecurityGroups resource
@@ -262,7 +262,10 @@ data "external" "nsg_exists" {
     helm_release.hpcc
   ]
 
-  program = ["${path.module}/helpers/${local.wait_for_nsg}", "${module.subscription.output.subscription_id}", "${module.kubernetes.node_resource_group}"]
+  program = concat(
+    local.wait_for_nsg_app_items,
+    ["${module.subscription.output.subscription_id}", "${module.kubernetes.node_resource_group}"]
+  )
 }
 
 # Load the information from the NSG
