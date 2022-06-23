@@ -257,7 +257,7 @@ data "external" "nsg_exists" {
     helm_release.hpcc
   ]
 
-  program = ["${path.module}/wait_for_nsg.sh", "${module.subscription.output.subscription_id}", "${module.kubernetes.node_resource_group}"]
+  program = ["${path.module}/helpers/wait_for_nsg.sh", "${module.subscription.output.subscription_id}", "${module.kubernetes.node_resource_group}"]
 }
 
 # Load the information from the NSG
