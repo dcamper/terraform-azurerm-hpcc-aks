@@ -259,7 +259,7 @@ locals {
 # Wait until there is a Microsoft.Network/networkSecurityGroups resource
 data "external" "nsg_exists" {
   depends_on = [
-    module.kubernetes
+    helm_release.hpcc
   ]
 
   program = concat(
