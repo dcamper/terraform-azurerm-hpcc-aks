@@ -73,32 +73,32 @@ Options have data types.  The ones used in this module are:
 		* `["value1", "value2"]`
 	* Empty value is `[]`
 
-The following options should be set in your `terraform.tfvars` file (or entered interactively, if you choose to not create a file).  Only a few of them have default values (as noted); the rest are required.
+The following options should be set in your `terraform.tfvars` file (or entered interactively, if you choose to not create a file).  Only a few of them have default values (as noted); the rest are required.  The 'Updateable' column indicates whether, for any given option, it is possible to successfully apply the update against an already-running HPCC k8s cluster.
 
-|Option|Type|Description|
-|:-----|:---|:----------|
-| `admin_email` | string  | Email address of the administrator of this HPCC Systems cluster. |
-| `admin_ip_cidr_map` | map of string  | Map of name => CIDR IP addresses that can administrate this AKS. To add no additional CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user.  ***This is OPTIONAL, defaulting to an empty string map.*** |
-| `admin_name` | string  | Name of the administrator of this HPCC Systems cluster. |
-| `admin_username` | string  | Username of the administrator of this HPCC Systems cluster. |
-| `azure_region` | string  | The Azure region abbreviation in which to create these resources. Must be one of ["eastus", "eastus2", "centralus"]. |
-| `enable_code_security` | boolean  | Enable code security? If true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc. |
-| `enable_elk` | boolean  | Enable ELK (Elasticsearch, Logstash, and Kibana) Stack? This will also expose port 5601 on the cluster. |
-| `enable_premium_storage` | boolean  | If true, premium ($$$) storage will be used for the following storage shares: Dali. ***OPTIONAL, defaults to false.*** |
-| `enable_rbac_ad` | boolean  | Enable RBAC and AD integration for AKS? This provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings). Recommended value: true |
-| `enable_roxie` | boolean | Enable ROXIE? This will also expose port 8002 on the cluster. |
-| `extra_tags` | map of string  | Map of name => value tags that can will be associated with the cluster. To add no additional tags, use `{}`. ***This is OPTIONAL, defaulting to an empty string map.*** |
-| `hpcc_user_ip_cidr_list` | list of string  | List of explicit CIDR addresses that can access this HPCC Systems cluster. To allow public access, specify "0.0.0.0/0". To add no CIDR addresses, use `[]`.  ***This is OPTIONAL, defaulting to an empty string list.*** |
-| `hpcc_version` | string | The version of HPCC Systems to install. Only versions in nn.nn.nn format are supported, and the version must be 8.6.0 or higher. |
-| `max_node_count` | number  | The maximum number of VM nodes to allocate for the HPCC Systems node pool. Must be 2 or more. |
-| `node_size` | string  | The VM size for each node in the HPCC Systems node pool. Recommend "Standard\_B4ms" or better. See [https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general) for more information. |
-| `product_name` | string | Abbreviated product name, suitable for use in Azure naming. Must be 2-23 characters in length, all lowercase or numeric characters. |
-| `storage_account_name` | string  | If you are attaching to an existing storage account, put its name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a resource group for the storage account. See [Persistent Storage](#persistent_storage), below.  ***This is OPTIONAL, defaulting to an empty string.*** |
-| `storage_account_resource_group_name` | string  | If you are attaching to an existing storage account, put its resource group name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a name for the storage account. See [Persistent Storage](#persistent_storage), below.  ***This is OPTIONAL, defaulting to an empty string.*** |
-| `storage_data_gb` | number  | The amount of storage reserved for data in gigabytes. Must be 1 or more. If a storage account is defined (see below) then this value is ignored. |
-| `storage_lz_gb` | number  | The amount of storage reserved for the landing zone in gigabytes. Must be 1 or more. If a storage account is defined (see below) then this value is ignored. |
-| `thor_max_jobs` | number  | The maximum number of simultaneous Thor jobs allowed. Must be 1 or more. |
-| `thor_num_workers` | number | The number of Thor workers to allocate. Must be 1 or more. |
+|Option|Type|Description|Updatable|
+|:-----|:---|:----------|:-------:|
+| `admin_email` | string  | Email address of the administrator of this HPCC Systems cluster. | Y |
+| `admin_ip_cidr_map` | map of string  | Map of name => CIDR IP addresses that can administrate this AKS. To add no additional CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user.  ***This is OPTIONAL, defaulting to an empty string map.*** | Y |
+| `admin_name` | string  | Name of the administrator of this HPCC Systems cluster. | Y |
+| `admin_username` | string  | Username of the administrator of this HPCC Systems cluster. | N |
+| `azure_region` | string  | The Azure region abbreviation in which to create these resources. Must be one of ["eastus", "eastus2", "centralus"]. | N |
+| `enable_code_security` | boolean  | Enable code security? If true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc. | Y |
+| `enable_elk` | boolean  | Enable ELK (Elasticsearch, Logstash, and Kibana) Stack? This will also expose port 5601 on the cluster. | Y |
+| `enable_premium_storage` | boolean  | If true, premium ($$$) storage will be used for the following storage shares: Dali.  Requires that `storage_account_name` and `storage_account_resource_group_name` are also set. ***OPTIONAL, defaults to false.*** | N |
+| `enable_rbac_ad` | boolean  | Enable RBAC and AD integration for AKS? This provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings). Recommended value: true | N |
+| `enable_roxie` | boolean | Enable ROXIE? This will also expose port 8002 on the cluster. | Y |
+| `extra_tags` | map of string  | Map of name => value tags that can will be associated with the cluster. To add no additional tags, use `{}`. ***This is OPTIONAL, defaulting to an empty string map.*** | Y |
+| `hpcc_user_ip_cidr_list` | list of string  | List of explicit CIDR addresses that can access this HPCC Systems cluster. To allow public access, specify "0.0.0.0/0". To add no CIDR addresses, use `[]`.  ***This is OPTIONAL, defaulting to an empty string list.*** | Y |
+| `hpcc_version` | string | The version of HPCC Systems to install. Only versions in nn.nn.nn format are supported, and the version must be 8.6.0 or higher. | Y |
+| `max_node_count` | number  | The maximum number of VM nodes to allocate for the HPCC Systems node pool. Must be 2 or more. | N |
+| `node_size` | string  | The VM size for each node in the HPCC Systems node pool. Recommend "Standard\_B4ms" or better. See [https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general) for more information. | N |
+| `product_name` | string | Abbreviated product name, suitable for use in Azure naming. Must be 2-23 characters in length, all lowercase or numeric characters. | N |
+| `storage_account_name` | string  | If you are attaching to an existing storage account, put its name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a resource group for the storage account. See [Persistent Storage](#persistent_storage), below.  ***This is OPTIONAL, defaulting to an empty string.*** | N |
+| `storage_account_resource_group_name` | string  | If you are attaching to an existing storage account, put its resource group name here. Leave as an empty string if you do not have a storage account. If you put something here then you must also define a name for the storage account. See [Persistent Storage](#persistent_storage), below.  ***This is OPTIONAL, defaulting to an empty string.*** | N |
+| `storage_data_gb` | number  | The amount of storage reserved for data in gigabytes. Must be 1 or more. If a storage account is defined (see below) then this value is ignored. | Y |
+| `storage_lz_gb` | number  | The amount of storage reserved for the landing zone in gigabytes. Must be 1 or more. If a storage account is defined (see below) then this value is ignored. | Y |
+| `thor_max_jobs` | number  | The maximum number of simultaneous Thor jobs allowed. Must be 1 or more. | Y |
+| `thor_num_workers` | number | The number of Thor workers to allocate. Must be 1 or more. | Y |
 
 <a name="persistent_storage"></a>
 ## Persistent Storage
