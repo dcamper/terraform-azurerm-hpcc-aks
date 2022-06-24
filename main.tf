@@ -253,24 +253,24 @@ resource "helm_release" "storage" {
 
 # Choose OS-specific script for finding Network Security Group
 locals {
-  wait_for_nsg_app_items = local.is_windows_os ? ["PowerShell.exe", "${path.module}/helpers/wait_for_nsg.ps1"] : ["${path.module}/helpers/wait_for_nsg.sh"]
+  wait_for_nsg_script = local.is_windows_os ? ["PowerShell.exe", "${path.module}/helpers/wait_for_nsg.ps1"] : ["${path.module}/helpers/wait_for_nsg.sh"]
 }
 
 # Wait until there is a Microsoft.Network/networkSecurityGroups resource
-data "external" "nsg_exists" {
+data "external" "k8s_mc_nsg_name" {
   depends_on = [
     helm_release.hpcc # Needed because downstream code needs an HPCC service IP address
   ]
 
   program = concat(
-    local.wait_for_nsg_app_items,
+    local.wait_for_nsg_script,
     ["${module.subscription.output.subscription_id}", "${module.kubernetes.node_resource_group}"]
   )
 }
 
 # Load the information from the NSG
 data "azurerm_network_security_group" "k8s_nsg" {
-  name                = data.external.nsg_exists.result["nsg"]
+  name                = data.external.k8s_mc_nsg_name.result["nsg"]
   resource_group_name = module.kubernetes.node_resource_group
 }
 
