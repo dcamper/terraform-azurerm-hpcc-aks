@@ -256,7 +256,8 @@ locals {
   wait_for_nsg_script = local.is_windows_os ? ["PowerShell.exe", "${path.module}/helpers/wait_for_nsg.ps1"] : ["${path.module}/helpers/wait_for_nsg.sh"]
 }
 
-# Wait until there is a Microsoft.Network/networkSecurityGroups resource
+# Run a script that queries Azure for the MC_* network security group we need,
+# waiting until it is actually available before returning
 data "external" "k8s_mc_nsg_name" {
   depends_on = [
     helm_release.hpcc # Needed because downstream code needs an HPCC service IP address
