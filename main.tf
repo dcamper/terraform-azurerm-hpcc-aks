@@ -259,7 +259,7 @@ locals {
 # Wait until there is a Microsoft.Network/networkSecurityGroups resource
 data "external" "nsg_exists" {
   depends_on = [
-    helm_release.hpcc
+    helm_release.hpcc # Needed because downstream code needs an HPCC service IP address
   ]
 
   program = concat(
