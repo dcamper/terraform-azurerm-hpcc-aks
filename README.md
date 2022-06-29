@@ -8,13 +8,13 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 
 ## Requirements
 
-* <font color="red">Terraform</font> This is a Terraform module, so you need to have Terraform installed on your system.  Instructions for downloading and installing Terraform can be found at [https://www.terraform.io/downloads.html](https://www.terraform.io/downloads.html).
+* <font color="red">**Terraform**</font> This is a Terraform module, so you need to have Terraform installed on your system.  Instructions for downloading and installing Terraform can be found at [https://www.terraform.io/downloads.html](https://www.terraform.io/downloads.html).
 
-* <font color="red">kubectl</font> The Kubernetes client (kubectl) is also required so you can inspect and manage the Azure Kubernetes cluster.  Instructions for download and installing that can be found at [https://kubernetes.io/releases/download/](https://kubernetes.io/releases/download/).  Make sure you have version 1.22.0 or later.
+* <font color="red">**kubectl**</font> The Kubernetes client (kubectl) is also required so you can inspect and manage the Azure Kubernetes cluster.  Instructions for download and installing that can be found at [https://kubernetes.io/releases/download/](https://kubernetes.io/releases/download/).  Make sure you have version 1.22.0 or later.
 
-* <font color="red">Azure CLI</font> To work with Azure, you will need to install the Azure Command Line tools.  Instructions can be found at [https://docs.microsoft.com/en-us/cli/azure/install-azure-cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).  Even if you think you won't be working with Azure, this module does leverage the command line tools to manipulate network security groups within kubernetes clusters.  TL;DR: Make sure you have the command line tools installed.
+* <font color="red">**Azure CLI**</font> To work with Azure, you will need to install the Azure Command Line tools.  Instructions can be found at [https://docs.microsoft.com/en-us/cli/azure/install-azure-cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).  Even if you think you won't be working with Azure, this module does leverage the command line tools to manipulate network security groups within kubernetes clusters.  TL;DR: Make sure you have the command line tools installed.
 
-* <font color="red">Graph extension for Azure CLI</font> The Azure Command Line tools also requires that the extension 'resource-graph' be installed.  You can do that with the command `az extension add --name resource-graph`.  This command needs to be performed only once.
+* <font color="red">**Graph extension for Azure CLI**</font> The Azure Command Line tools also requires that the extension 'resource-graph' be installed.  You can do that with the command `az extension add --name resource-graph`.  This command needs to be performed only once.
 
 * This module will create an AKS cluster in your current **default** Azure subscription.  You can view your current subscriptions, and determine which is the default, using the `az account list --output table` command.  To set a default subscription, use `az account set --subscription "My_Subscription"`.
 
