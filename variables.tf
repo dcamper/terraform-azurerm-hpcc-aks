@@ -145,6 +145,12 @@ variable "thor_num_workers" {
 # Optional variables
 ###############################################################################
 
+variable "authn_htpasswd_filename" {
+  type        = string
+  description = "OPTIONAL.  If you would like to use htpasswd to authenticate users to the cluster, enter the filename of the htpasswd file.  This file should be uploaded to the Azure 'dllsshare' file share in order for the HPCC processes to find it.\nExample entry: htpasswd.txt"
+  default     = ""
+}
+
 variable "hpcc_image_name" {
   type        = string
   description = "REQUIRED.  The global image name of the HPCC docker image to deploy.\nMust be one of [\"platform-core\", \"platform-ml\", \"platform-gnn\"].\nDefault value: platform-core"
