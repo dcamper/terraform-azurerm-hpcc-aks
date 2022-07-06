@@ -1,6 +1,6 @@
 roxie:
 - name: roxie
-  disabled: false
+  disabled: true
   prefix: roxie
   services:
   - name: roxie
@@ -12,7 +12,6 @@ roxie:
   numChannels: 2
   localAgent: false
   traceLevel: 1
-  # totalMemoryLimit: "1Gi"
   serverReplicas: 0
   topoServer:
     replicas: 1

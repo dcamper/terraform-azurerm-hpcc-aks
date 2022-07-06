@@ -147,7 +147,7 @@ variable "thor_num_workers" {
 
 variable "authn_htpasswd_filename" {
   type        = string
-  description = "OPTIONAL.  If you would like to use htpasswd to authenticate users to the cluster, enter the filename of the htpasswd file.  This file should be uploaded to the Azure 'dllsshare' file share in order for the HPCC processes to find it.\nExample entry: htpasswd.txt"
+  description = "OPTIONAL.  If you would like to use htpasswd to authenticate users to the cluster, enter the filename of the htpasswd file.  This file should be uploaded to the Azure 'dllsshare' file share in order for the HPCC processes to find it.\nAn empty string indicates that htpasswd is not to be used for authentication.\nExample entry: htpasswd.txt"
   default     = ""
 }
 

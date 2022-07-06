@@ -186,14 +186,14 @@ storage_account_resource_group_name=""
 
 # The global image name of the HPCC docker image to deploy.
 # Must be one of ["platform-core", "platform-ml", "platform-gnn"].
-# Default value: platform-core
+# Default value: "platform-core"
 
 # hpcc_image_name="platform-core"
 
 #------------------------------------------------------------------------------
 
 # The Kubernetes namespace in which to install the HPCC and ELK modules (if enabled).
-# Default value: default
+# Default value: "default"
 
 # hpcc_namespace="default"
 
@@ -203,3 +203,13 @@ storage_account_resource_group_name=""
 # OPTIONAL, defaults to false.
 
 enable_premium_storage=false
+
+#------------------------------------------------------------------------------
+
+# If you would like to use htpasswd to authenticate users to the cluster, enter
+# the filename of the htpasswd file.  This file should be uploaded to the Azure
+# 'dllsshare' file share in order for the HPCC processes to find it.
+# An empty string indicates that htpasswd is not to be used for authentication.
+# Example entry: "htpasswd.txt"
+
+authn_htpasswd_filename=""

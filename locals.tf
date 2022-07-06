@@ -85,19 +85,73 @@ locals {
 
   #----------------------------------------------------------------------------
 
+  # Basic esp settings (with visibility set to global)
+  esp_base = yamldecode(file("${path.module}/customizations/esp.yaml"))
+
+  # Make roxie visible if necessary
+  esp_roxie = {
+    esp = [
+      for s in (local.esp_base.esp)
+        : merge(
+            s,
+            var.enable_roxie && s.name == "eclqueries" ? {service = {servicePort = 8002, visibility = "global"}} : {}
+          )
+    ]
+  }
+
+  # Enable htpasswd authentication if necessary
+  esp_htpasswd = {
+    esp = [
+      for s in (local.esp_roxie.esp)
+        : merge(
+            s,
+            try(var.authn_htpasswd_filename, "") != "" && s.service.visibility == "global" ? {auth = "htpasswdSecMgr"} : {},
+            try(var.authn_htpasswd_filename, "") != "" && s.service.visibility == "global" ? {authNZ = {htpasswdSecMgr = {htpasswdFile = "/var/lib/HPCCSystems/queries/${var.authn_htpasswd_filename}"}}} : {}
+          )
+    ]
+  }
+
+  # A variable holding the "final" rewrite of the esp configurations.  Future
+  # configuration changes should occur prior to this line, then this variable
+  # should reference those new variables.
+  esp_rewritten = local.esp_htpasswd
+
+  #----------------------------------------------------------------------------
+
+  # Basic roxie settings (with disabled set to true)
+  roxie_base = yamldecode(file("${path.module}/customizations/roxie.yaml"))
+
+  # Enable roxie if necessary
+  roxie_enabled = {
+    roxie = [
+      for s in (local.roxie_base.roxie)
+        : merge(
+            s,
+            var.enable_roxie ? {disabled = false} : {}
+          )
+    ]
+  }
+
+  # A variable holding the "final" rewrite of the roxie configurations.  Future
+  # configuration changes should occur prior to this line, then this variable
+  # should reference those new variables.
+  roxie_rewritten = local.roxie_enabled
+
+  #----------------------------------------------------------------------------
+
   hpcc = {
     version        = var.hpcc_version
     namespace      = var.hpcc_namespace
     name           = "${local.metadata.product_name}-hpcc"
 
     values         = concat(
-      ["${path.module}/customizations/placements.yaml"],
-      [var.enable_roxie ? "${path.module}/customizations/esp-roxie.yaml" : "${path.module}/customizations/esp.yaml"],
-      ["${path.module}/customizations/eclcc.yaml"],
-      ["${path.module}/customizations/thor.yaml"],
-      ["${path.module}/customizations/hthor.yaml"],
-      [var.enable_roxie ? "${path.module}/customizations/roxie-on.yaml" : "${path.module}/customizations/roxie-off.yaml"],
-      var.enable_code_security ? ["${path.module}/customizations/security.yaml"] : []
+      [file("${path.module}/customizations/placements.yaml")],
+      [yamlencode(local.esp_rewritten)],
+      [file("${path.module}/customizations/eclcc.yaml")],
+      [file("${path.module}/customizations/thor.yaml")],
+      [file("${path.module}/customizations/hthor.yaml")],
+      [yamlencode(local.roxie_rewritten)],
+      var.enable_code_security ? [file("${path.module}/customizations/security.yaml")] : []
     )
 
     ecl_watch_port = 8010

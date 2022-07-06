@@ -181,7 +181,7 @@ resource "helm_release" "hpcc" {
 
   values = concat(
     local.has_storage_account ? [yamlencode(local.hpcc.storage_sa_pvc)] : [yamlencode(local.hpcc.storage_pvc)],
-    try([for v in local.hpcc.values : file(v)], []),
+    try([for v in local.hpcc.values : v], []),
     [yamlencode(local.hpcc.chart_values)]
   )
 
