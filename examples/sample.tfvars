@@ -209,6 +209,7 @@ enable_premium_storage=false
 # If you would like to use htpasswd to authenticate users to the cluster, enter
 # the filename of the htpasswd file.  This file should be uploaded to the Azure
 # 'dllsshare' file share in order for the HPCC processes to find it.
+# A corollary is that persistent storage is enabled.
 # An empty string indicates that htpasswd is not to be used for authentication.
 # Example entry: "htpasswd.txt"
 
