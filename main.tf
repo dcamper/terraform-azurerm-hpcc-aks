@@ -251,6 +251,13 @@ resource "helm_release" "storage" {
 # network security group, so we can then make modifications to it.  It is
 # probably fragile.
 
+# Ensure that az graph extension is installed
+resource "null_resource" "az_graph" {
+  provisioner "local-exec" {
+    command     = "az extension add --name resource-graph"
+  }
+}
+
 # Choose OS-specific script for finding Network Security Group
 locals {
   wait_for_nsg_script = local.is_windows_os ? ["PowerShell", "${path.module}/helpers/wait_for_nsg.ps1"] : ["/usr/bin/env", "bash", "${path.module}/helpers/wait_for_nsg.sh"]
@@ -260,6 +267,7 @@ locals {
 # waiting until it is actually available before returning
 data "external" "k8s_mc_nsg_name" {
   depends_on = [
+    resource.null_resource.az_graph,
     helm_release.hpcc # Needed because downstream code needs an HPCC service IP address
   ]
 

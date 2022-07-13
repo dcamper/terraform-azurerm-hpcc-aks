@@ -14,8 +14,6 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 
 * <font color="red">**Azure CLI**</font> To work with Azure, you will need to install the Azure Command Line tools.  Instructions can be found at [https://docs.microsoft.com/en-us/cli/azure/install-azure-cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).  Even if you think you won't be working with Azure, this module does leverage the command line tools to manipulate network security groups within kubernetes clusters.  TL;DR: Make sure you have the command line tools installed.
 
-* <font color="red">**Graph extension for Azure CLI**</font> The Azure Command Line tools also requires that the extension 'resource-graph' be installed.  You can do that with the command `az extension add --name resource-graph`.  This command needs to be performed only once.
-
 * This module will create an AKS cluster in your current **default** Azure subscription.  You can view your current subscriptions, and determine which is the default, using the `az account list --output table` command.  To set a default subscription, use `az account set --subscription "My_Subscription"`.
 
 * To successfully create everything you will need to have Azure's `Contributor` role plus access to `Microsoft.Authorization/*/Write` and `Microsoft.Authorization/*/Delete` permissions on your subscription.  You may have to create a custom role for this.  Of course, Azure's `Owner` role includes everything so if you're the subscription's owner then you're good to go.
