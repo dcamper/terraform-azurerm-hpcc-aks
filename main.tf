@@ -253,7 +253,7 @@ resource "helm_release" "storage" {
 
 # Choose OS-specific script for finding Network Security Group
 locals {
-  wait_for_nsg_script = local.is_windows_os ? ["PowerShell", "${path.module}/helpers/wait_for_nsg.ps1"] : ["/usr/bin/env bash", "${path.module}/helpers/wait_for_nsg.sh"]
+  wait_for_nsg_script = local.is_windows_os ? ["PowerShell", "${path.module}/helpers/wait_for_nsg.ps1"] : ["/usr/bin/env", "bash", "${path.module}/helpers/wait_for_nsg.sh"]
 }
 
 # Run a script that queries Azure for the MC_* network security group we need,
@@ -375,7 +375,7 @@ resource "azurerm_network_security_rule" "ingress_internet_admin_deny" {
 resource "null_resource" "az" {
   provisioner "local-exec" {
     command     = local.az_command
-    interpreter = local.is_windows_os ? ["PowerShell", "-Command"] : ["/usr/bin/env bash", "-c"]
+    interpreter = local.is_windows_os ? ["PowerShell", "-Command"] : ["/usr/bin/env", "bash", "-c"]
   }
 
   triggers = {
