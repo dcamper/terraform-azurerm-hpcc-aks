@@ -356,7 +356,7 @@ locals {
   }
 
   # CIDR address of user running Terraform
-  host_ip         = "${chomp(data.http.host_ip.body)}"
+  host_ip         = "${chomp(data.http.host_ip.response_body)}"
   host_ip_cidr    = "${local.host_ip}/32"
 
   # Check to see if user's IP address is in a default admin CIDR
