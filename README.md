@@ -8,7 +8,7 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 
 ## Requirements
 
-* <font color="red">**Terraform**</font> This is a Terraform module, so you need to have Terraform installed on your system.  Instructions for downloading and installing Terraform can be found at [https://www.terraform.io/downloads.html](https://www.terraform.io/downloads.html).
+* <font color="red">**Terraform**</font> This is a Terraform module, so you need to have Terraform installed on your system.  Instructions for downloading and installing Terraform can be found at [https://www.terraform.io/downloads.html](https://www.terraform.io/downloads.html).  Do make sure you install a 64-bit version of Terraform, as that is needed to accommodate some of the large random numbers used for IDs in the Terraform modules.
 
 * <font color="red">**helm**</font> Helm is used to deploy the HPCC Systems processes under Kubernetes.  Instructions for downloading and installing Helm are at [https://helm.sh/docs/intro/install](https://helm.sh/docs/intro/install/).
 
