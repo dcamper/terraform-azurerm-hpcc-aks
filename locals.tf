@@ -99,14 +99,28 @@ locals {
     ]
   }
 
-  # Enable htpasswd authentication if necessary
-  esp_htpasswd = {
+  # Enable htpasswd authentication if necessary; this is done in two steps
+  enable_htpasswd = (try(var.authn_htpasswd_filename, "") != "")
+  esp_with_htpasswd1 = {
     esp = [
       for s in (local.esp_roxie.esp)
         : merge(
             s,
-            try(var.authn_htpasswd_filename, "") != "" && s.service.visibility == "global" ? {auth = "htpasswdSecMgr"} : {},
-            try(var.authn_htpasswd_filename, "") != "" && s.service.visibility == "global" ? {authNZ = {htpasswdSecMgr = {htpasswdFile = "/var/lib/HPCCSystems/queries/${var.authn_htpasswd_filename}"}}} : {}
+            local.enable_htpasswd && s.service.visibility == "global" ? {auth = "htpasswdSecMgr"} : {},
+            local.enable_htpasswd && s.service.visibility == "global" && s.application == "eclwatch" ? yamldecode(file("${path.module}/customizations/htpasswd/eclwatch.yaml")) : {},
+            local.enable_htpasswd && s.service.visibility == "global" && s.application == "eclqueries" ? yamldecode(file("${path.module}/customizations/htpasswd/eclqueries.yaml")) : {},
+            local.enable_htpasswd && s.service.visibility == "global" && s.application == "sql2ecl" ? yamldecode(file("${path.module}/customizations/htpasswd/sql2ecl.yaml")) : {}
+          )
+    ]
+  }
+
+  # Now go back and fix the htpasswdFile entries
+  esp_with_htpasswd2 = {
+    esp = [
+      for s in (local.esp_with_htpasswd1.esp)
+        : merge(
+            s,
+            s.auth == "htpasswdSecMgr" ? {authNZ = {htpasswdSecMgr = merge(s.authNZ.htpasswdSecMgr, {htpasswdFile = "/var/lib/HPCCSystems/queries/${var.authn_htpasswd_filename}"})}} : {}
           )
     ]
   }
@@ -114,7 +128,7 @@ locals {
   # A variable holding the "final" rewrite of the esp configurations.  Future
   # configuration changes should occur prior to this line, then this variable
   # should reference those new variables.
-  esp_rewritten = local.esp_htpasswd
+  esp_rewritten = local.esp_with_htpasswd2
 
   #----------------------------------------------------------------------------
 
