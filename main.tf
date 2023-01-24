@@ -175,7 +175,7 @@ resource "helm_release" "hpcc" {
   disable_openapi_validation = try(local.hpcc.disable_openapi_validation, null)
   wait                       = try(local.hpcc.wait, null)
   dependency_update          = try(local.hpcc.dependency_update, null)
-  timeout                    = try(local.hpcc.timeout, 600)
+  timeout                    = try(local.hpcc.timeout, 1200)
   wait_for_jobs              = try(local.hpcc.wait_for_jobs, null)
   lint                       = try(local.hpcc.lint, null)
 
