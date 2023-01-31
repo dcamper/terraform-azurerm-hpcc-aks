@@ -166,7 +166,7 @@ resource "helm_release" "hpcc" {
   name                       = local.hpcc.name
   chart                      = "hpcc"
   repository                 = "https://hpcc-systems.github.io/helm-chart/"
-  version                    = local.hpcc.version
+  version                    = local.hpcc.version != "latest" ? local.hpcc.version : null
   create_namespace           = true
   namespace                  = try(local.hpcc.namespace, terraform.workspace)
   atomic                     = try(local.hpcc.atomic, null)

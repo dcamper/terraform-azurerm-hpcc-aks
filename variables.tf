@@ -96,8 +96,6 @@ variable "node_size" {
   description = "REQUIRED.  The VM size for each node in the HPCC Systems node pool.\nRecommend \"Standard_B4ms\" or better.\nSee https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general for more information."
 }
 
-# I changed the condition to match that of .terraform/modules/metadata/variables.tf (line 60). Why? 
-#  In main.tf, module metadata, 'product_name' is checked against line 60 condition which says its length must be between 3-16 characters.
 variable "product_name" {
   type        = string
   description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 3-16, all lowercase or numeric characters.\nExample entry: myproduct"
