@@ -77,8 +77,8 @@ variable "hpcc_version" {
   description = "REQUIRED.  The version of HPCC Systems to install.\nOnly versions in nn.nn.nn format are supported."
   type        = string
   validation {
-    condition     = length(regexall("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}", var.hpcc_version)) == 1 && (regex("^(\\d{1,3})\\.", var.hpcc_version)[0] > 8 || (regex("^(\\d{1,3})\\.", var.hpcc_version)[0] == "8" && regex("^\\d{1,3}\\.(\\d{1,3})\\.", var.hpcc_version)[0] >= 6))
-    error_message = "Value must be in nn.nn.nn format and 8.6.0 or higher."
+    condition     = (var.hpcc_version == "latest") || can(regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$", var.hpcc_version))
+    error_message = "Value must be 'latest' OR in nn.nn.nn format and 8.6.0 or higher."
   }
 }
 
@@ -96,12 +96,14 @@ variable "node_size" {
   description = "REQUIRED.  The VM size for each node in the HPCC Systems node pool.\nRecommend \"Standard_B4ms\" or better.\nSee https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general for more information."
 }
 
+# I changed the condition to match that of .terraform/modules/metadata/variables.tf (line 60). Why? 
+#  In main.tf, module metadata, 'product_name' is checked against line 60 condition which says its length must be between 3-16 characters.
 variable "product_name" {
   type        = string
-  description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 2-23 characters in length, all lowercase or numeric characters.\nExample entry: myproduct"
+  description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 3-16, all lowercase or numeric characters.\nExample entry: myproduct"
   validation {
-    condition     = length(regexall("^[a-z][a-z0-9]{1,22}$", var.product_name)) == 1
-    error_message = "Value must be 2-23 characters in length, all lowercase or numbers."
+    condition     = can(regex("^[a-z][a-z0-9]{2,15}$", var.product_name))
+    error_message = "product_name must be [a-z0-9]{3,16}."
   }
 }
 
