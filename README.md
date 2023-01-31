@@ -92,7 +92,7 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 | `enable_roxie` | boolean | Enable ROXIE? This will also expose port 8002 on the cluster. | Y |
 | `extra_tags` | map of string  | Map of name => value tags that can will be associated with the cluster. To add no additional tags, use `{}`. ***This is OPTIONAL, defaulting to an empty string map.*** | Y |
 | `hpcc_user_ip_cidr_list` | list of string  | List of explicit CIDR addresses that can access this HPCC Systems cluster. To allow public access, specify "0.0.0.0/0". To add no CIDR addresses, use `[]`.  ***This is OPTIONAL, defaulting to an empty string list.*** | Y |
-| `hpcc_version` | string | The version of HPCC Systems to install. Only versions in nn.nn.nn format are supported, and the version must be 8.6.0 or higher. | Y |
+| `hpcc_version` | string | The version of HPCC Systems to install. Only the string "latest" or versions in nn.nn.nn format are supported, and the version must be 8.6.0 or higher. | Y |
 | `max_node_count` | number  | The maximum number of VM nodes to allocate for the HPCC Systems node pool. Must be 2 or more. | N |
 | `node_size` | string  | The VM size for each node in the HPCC Systems node pool. Recommend "Standard\_B4ms" or better. See [https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general) for more information. | N |
 | `product_name` | string | Abbreviated product name, suitable for use in Azure naming. Must be 3-16 characters in length, all lowercase or numeric characters. | N |
