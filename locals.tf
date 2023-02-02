@@ -156,6 +156,7 @@ locals {
     version        = var.hpcc_version
     namespace      = var.hpcc_namespace
     name           = "${local.metadata.product_name}-hpcc"
+    timeout        = var.hpcc_timeout
 
     values         = concat(
       [file("${path.module}/customizations/placements.yaml")],

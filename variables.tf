@@ -96,6 +96,15 @@ variable "node_size" {
   description = "REQUIRED.  The VM size for each node in the HPCC Systems node pool.\nRecommend \"Standard_B4ms\" or better.\nSee https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general for more information."
 }
 
+variable "hpcc_timeout" {
+  type        = number
+  description = "REQUIRED.  The maximum number of VM nodes to allocate for the HPCC Systems node pool.\nMust be 2 or more."
+  validation {
+    condition     = var.hpcc_timeout > 0
+    error_message = "Value must be greater than 0."
+  }
+}
+
 variable "product_name" {
   type        = string
   description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 3-16, all lowercase or numeric characters.\nExample entry: myproduct"
