@@ -3,6 +3,18 @@
 # if a .tfvars file is not supplied); there are no default values
 ###############################################################################
 
+variable "a_record_name" {
+  type        = string
+  description = "OPTIONAL: dns zone A record name"
+  default     = ""
+}
+
+variable "dns_zone_name_prefix" {
+  type        = string
+  description = "OPTIONAL: dns zone name prefix. The dns name will be var.dns_zone_name_prefix.<current_subscription_name>.azure.lnrsg.io"
+  default     = ""
+}
+
 variable "admin_email" {
   type        = string
   description = "REQUIRED.  Email address of the administrator of this HPCC Systems cluster.\nExample entry: jane.doe@hpccsystems.com"
