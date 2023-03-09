@@ -86,7 +86,7 @@ module "virtual_network" {
 }
 
 module "kubernetes" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.2"
+  source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.3.0"
 
   cluster_name        = local.aks_cluster_name
   location            = lower(var.azure_region)
