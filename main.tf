@@ -86,7 +86,7 @@ module "virtual_network" {
 }
 
 module "kubernetes" {
-  source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.2.2"
+  source = "github.com/Azure-Terraform/terraform-azurerm-kubernetes.git?ref=v4.3.0"
 
   cluster_name        = local.aks_cluster_name
   location            = lower(var.azure_region)
@@ -390,4 +390,29 @@ resource "null_resource" "az" {
     kubernetes_id = module.kubernetes.id
     build_number  = "${timestamp()}" # always trigger
   }
+}
+
+# ========================
+
+# Output the public ECL Watch IPv4 address; the following
+# could be broken out to separate modules, but it makes
+# sense to keep it together
+
+locals {
+  get_ip_watch_script = local.is_windows_os ? ["PowerShell", "${path.module}/helpers/ecl_watch_ip.ps1"] : ["/usr/bin/env", "bash", "${path.module}/helpers/ecl_watch_ip.sh"]
+}
+
+data "external" "ecl_watch_ip" {
+  depends_on = [
+    helm_release.hpcc # Needed because downstream code needs an HPCC service IP address
+  ]
+
+  program = concat(
+    local.get_ip_watch_script,
+    []
+  )
+}
+
+output "ecl_watch_ip" {
+  value = data.external.ecl_watch_ip.result["ip"]
 }
