@@ -391,3 +391,28 @@ resource "null_resource" "az" {
     build_number  = "${timestamp()}" # always trigger
   }
 }
+
+# ========================
+
+# Output the public ECL Watch IPv4 address; the following
+# could be broken out to separate modules, but it makes
+# sense to keep it together
+
+locals {
+  get_ip_watch_script = local.is_windows_os ? ["PowerShell", "${path.module}/helpers/ecl_watch_ip.ps1"] : ["/usr/bin/env", "bash", "${path.module}/helpers/ecl_watch_ip.sh"]
+}
+
+data "external" "ecl_watch_ip" {
+  depends_on = [
+    helm_release.hpcc # Needed because downstream code needs an HPCC service IP address
+  ]
+
+  program = concat(
+    local.get_ip_watch_script,
+    []
+  )
+}
+
+output "ecl_watch_ip" {
+  value = data.external.ecl_watch_ip.result["ip"]
+}
