@@ -5,10 +5,6 @@ output "url" {
   depends_on  = [module.child_dns_zone]
 }
 
-output "eclwatchip" {
-  value       = data.external.get_eclwatchip.result["ecl_watch_ip"]
-}
-
 output "advisor_recommendations" {
   value = data.azurerm_advisor_recommendations.advisor.recommendations
 }

@@ -1,11 +1,4 @@
 #-----------------------------------------------------------------------------
-data "external" "get_eclwatchip" {
-  program = ["./scripts/get_eclwatchip.pl"]
-
-  depends_on = [helm_release.hpcc]
-}
-
-#-----------------------------------------------------------------------------
 data "azurerm_advisor_recommendations" "advisor" {
 
   filter_by_category        = ["Security", "Cost"]

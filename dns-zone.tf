@@ -13,5 +13,5 @@ resource "azurerm_dns_a_record" "mw-record_set" {
   zone_name = module.child_dns_zone.name
   resource_group_name = module.child_dns_zone.dns_resource_group
   ttl                 = 300
-  records             = ["${data.external.get_eclwatchip.result["ecl_watch_ip"]}"]
+  records             = ["${data.external.ecl_watch_ip.result["ip"]}"]
 }
