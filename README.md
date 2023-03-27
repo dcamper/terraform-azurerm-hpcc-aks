@@ -31,7 +31,8 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 1. Decide how you want to supply option values to the module during invocation.  There are three possibilities:
 	1. Invoke the `terraform apply` command and enter values for each option as Terraform prompts for it, then enter `yes` at the final prompt to begin building the cluster.
 	1. **Recommended:**  Create a `terraform.tfvars` file containing the values for each option, invoke `terraform apply`, then enter `yes` at the final prompt to begin building the cluster.  The easiest way to do that is to copy the sample file and then edit the copy:
-		* `cp examples/sample.tfvars terraform.tfvars`
+		* `cp examples/sample.tfvars terraform.tfvars` OR
+		* `cp examples/sample-with-dns-zone.tfvars terraform.tfvars`
 	1. Use -var arguments on the command line when executing the terraform tool to set each of the values found in the .tfvars file.  This method is useful if you are driving the creation of the cluster from a script.
 1. After the Kubernetes cluster is deployed, your local `kubectl` tool can be used to interact with it.  At some point during the deployment `kubectl` will acquire the login credentials for the cluster and it will be the current context (so any `kubectl` commands you enter will be directed to that cluster by default).
 
