@@ -1,8 +1,7 @@
-output "url" {
+output "ecl_watch_url" {
 
-  value       = format("http://%s.%s:8010",var.a_record_name, module.child_dns_zone.name)
+  value       = ((var.dns_zone_name != "") && (var.dns_zone_resource_group_name != "") && (var.a_record_name != ""))? format("http://%s.%s:8010",var.a_record_name, var.dns_zone_name) : format("http://%s:8010", data.external.ecl_watch_ip.result["ip"])
 
-  depends_on  = [module.child_dns_zone]
 }
 
 output "advisor_recommendations" {
