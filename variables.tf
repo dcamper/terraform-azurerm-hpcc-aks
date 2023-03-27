@@ -3,6 +3,24 @@
 # if a .tfvars file is not supplied); there are no default values
 ###############################################################################
 
+variable "a_record_name" {
+  type        = string
+  description = "OPTIONAL: dns zone A record name"
+  default     = ""
+}
+
+variable "dns_zone_resource_group_name" {
+  type        = string
+  description = "OPTIONAL: Name of the resource group containing the dns zone."
+  default     = ""
+}
+
+variable "dns_zone_name" {
+  type        = string
+  description = "OPTIONAL: dns zone name. The name of existing dns zone."
+  default     = ""
+}
+
 variable "admin_email" {
   type        = string
   description = "REQUIRED.  Email address of the administrator of this HPCC Systems cluster.\nExample entry: jane.doe@hpccsystems.com"
