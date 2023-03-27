@@ -1,3 +1,9 @@
+output "ecl_watch_url" {
+
+  value       = ((var.dns_zone_name != "") && (var.dns_zone_resource_group_name != "") && (var.a_record_name != ""))? format("http://%s.%s:8010",var.a_record_name, var.dns_zone_name) : format("http://%s:8010", data.external.ecl_watch_ip.result["ip"])
+
+}
+
 output "advisor_recommendations" {
   value = data.azurerm_advisor_recommendations.advisor.recommendations
 }

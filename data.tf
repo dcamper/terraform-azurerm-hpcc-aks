@@ -1,3 +1,4 @@
+#-----------------------------------------------------------------------------
 data "azurerm_advisor_recommendations" "advisor" {
 
   filter_by_category        = ["Security", "Cost"]

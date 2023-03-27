@@ -10,6 +10,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
+  debug = true
   kubernetes {
     host                   = module.kubernetes.kube_config.host
     client_certificate     = base64decode(module.kubernetes.kube_config.client_certificate)
