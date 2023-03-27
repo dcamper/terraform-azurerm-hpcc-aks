@@ -31,8 +31,7 @@ This repo is a fork of the excellent work performed by Godson Fortil.  The origi
 1. Decide how you want to supply option values to the module during invocation.  There are three possibilities:
 	1. Invoke the `terraform apply` command and enter values for each option as Terraform prompts for it, then enter `yes` at the final prompt to begin building the cluster.
 	1. **Recommended:**  Create a `terraform.tfvars` file containing the values for each option, invoke `terraform apply`, then enter `yes` at the final prompt to begin building the cluster.  The easiest way to do that is to copy the sample file and then edit the copy:
-		* `cp examples/sample.tfvars terraform.tfvars` OR
-		* `cp examples/sample-with-dns-zone.tfvars terraform.tfvars`
+		* `cp examples/sample.tfvars terraform.tfvars`
 	1. Use -var arguments on the command line when executing the terraform tool to set each of the values found in the .tfvars file.  This method is useful if you are driving the creation of the cluster from a script.
 1. After the Kubernetes cluster is deployed, your local `kubectl` tool can be used to interact with it.  At some point during the deployment `kubectl` will acquire the login credentials for the cluster and it will be the current context (so any `kubectl` commands you enter will be directed to that cluster by default).
 
@@ -82,15 +81,15 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 
 |Option|Type|Description|Updatable|
 |:-----|:---|:----------|:-------:|
-| `a_record_name` | string  | Name of the A record where the ecl watch ip is placed when you provide a dns zone | Y |
+| `a_record_name` | string  | Name of the A record where the ecl watch ip is placed when you provide a DNS zone. ***This is OPTIONAL, defaulting to an empty string.*** | Y |
 | `admin_email` | string  | Email address of the administrator of this HPCC Systems cluster. | Y |
 | `admin_ip_cidr_map` | map of string  | Map of name => CIDR IP addresses that can administrate this AKS. To add no additional CIDR addresses, use `{}`. The corporate network and your current IP address will be added automatically, and these addresses will have access to the HPCC cluster as a user.  ***This is OPTIONAL, defaulting to an empty string map.*** | Y |
 | `admin_name` | string  | Name of the administrator of this HPCC Systems cluster. | Y |
 | `admin_username` | string  | Username of the administrator of this HPCC Systems cluster. | N |
 | `authn_htpasswd_filename` | string  | If you would like to use htpasswd to authenticate users to the cluster, enter the filename of the htpasswd file.  This file should be uploaded to the Azure 'dllsshare' file share in order for the HPCC processes to find it.  A corollary is that persistent storage is enabled (see `storage_account_name` and `storage_account_resource_group_name `).  An empty string indicates that htpasswd is not to be used for authentication. ***This is OPTIONAL, defaulting to an empty string.*** | Y |
 | `azure_region` | string  | The Azure region abbreviation in which to create these resources. Must be one of ["eastus", "eastus2", "centralus"]. | N |
-| `dns_zone_name` | string  | Name of an existing dns zone | Y |
-| `dns_zone_resource_group_name` | string  | Name of the resource group of the existing dns zone (mentioned above) | Y |
+| `dns_zone_name` | string  | Name of an existing DNS zone. ***This is OPTIONAL, defaulting to an empty string.*** | Y |
+| `dns_zone_resource_group_name` | string  | Name of the resource group of the existing DNS zone (mentioned above). ***This is OPTIONAL, defaulting to an empty string.*** | Y |
 | `enable_code_security` | boolean  | Enable code security? If true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc. | Y |
 | `enable_elk` | boolean  | Enable ELK (Elasticsearch, Logstash, and Kibana) Stack? This will also expose port 5601 on the cluster. | Y |
 | `enable_premium_storage` | boolean  | If true, premium ($$$) storage will be used for the following storage shares: Dali.  Requires that `storage_account_name` and `storage_account_resource_group_name` are also set. ***OPTIONAL, defaults to false.*** | N |
@@ -112,9 +111,9 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 <a name="Providing DNS Zone and A record"></a>
 ## Providing DNS Zone and A record
 
-By default, this module creates an HPCC cluster that can be accessed using the public IP for ECL Watch. For example, if the ECL Watch IP was 20.122.243.194, you can access ECL Watch with the following URL: http://20.122.243.194:8010. Optionally, you can provide the name of an existing dns zone and a A record name, where the ECL Watch IP will be stored. This enables you to access ECL Watch using a combination of the A record name and the dns zone name. For example, if the A record name was "eclwatch" and the dns zone name was "us-hpccsystems-dev.azure.lnrsg.io" then you can access ECL Watch with the following URL: http://eclwatch.us-hpccsystems-dev.azure.lnrsg.io:8010.
+By default, this module creates an HPCC cluster that can be accessed using the public IP for ECL Watch. For example, if the ECL Watch IP was 20.122.243.194, you can access ECL Watch with the following URL: http://20.122.243.194:8010. Optionally, you can provide the name of an existing DNS zone and a A record name, where the ECL Watch IP will be stored. This enables you to access ECL Watch using a combination of the A record name and the DNS zone name. For example, if the A record name was "eclwatch" and the DNS zone name was "us-hpccsystems-dev.azure.lnrsg.io" then you can access ECL Watch with the following URL: http://eclwatch.us-hpccsystems-dev.azure.lnrsg.io:8010.
 
-To provide a dns zone, you must provide values for these 3 variables: a_record_name, dns_zone_name, and dns_zone_resource_group_name.
+To provide a DNS zone, you must provide values for these 3 variables: a_record_name, dns_zone_name, and dns_zone_resource_group_name.
 <a name="persistent_storage"></a>
 ## Persistent Storage
 

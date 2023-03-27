@@ -1,3 +1,31 @@
+# To have a dns zone and an A record, included in your apply, the following 3
+# variables, i.e. 'a_record_name', 'dns_zone_name', and 
+# dns_zone_resource_group_name must be set to non-blank or non-null values.
+#-----------------------------------------------------------------------------
+
+# Name of the A record, of following dns zone, where the ecl watch ip is placed
+# This A record will be created and therefore should not exist in the following
+# dns zone.
+# Example entry: "my-product". This should be something project specific rather
+# than something generic.
+
+a_record_name=""
+
+#-----------------------------------------------------------------------------
+
+# Name of an existing dns zone.
+# Example entry: "hpcczone.us-hpccsystems-dev.azure.lnrsg.io"
+
+dns_zone_name=""
+
+#-----------------------------------------------------------------------------
+
+# Name of the resource group of the above dns zone.
+# Example entry: "app-dns-prod-eastus2"
+
+dns_zone_resource_group_name=""
+
+#------------------------------------------------------------------------------
 
 # Abbreviated product name, suitable for use in Azure naming.
 # Must be 3-16 characters in length, all lowercase letters or numbers, no spaces.
