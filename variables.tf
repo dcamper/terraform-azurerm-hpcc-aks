@@ -64,11 +64,6 @@ variable "enable_code_security" {
   type        = bool
 }
 
-variable "enable_elk" {
-  description = "REQUIRED.  Enable ELK (Elasticsearch, Logstash, and Kibana) Stack?\nThis will also expose port 5601 on the cluster.\nExample entry: false"
-  type        = bool
-}
-
 variable "enable_rbac_ad" {
   description = "REQUIRED.  Enable RBAC and AD integration for AKS?\nThis provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings).\nValue type: boolean\nRecommended value: true\nExample entry: true"
   type        = bool
@@ -181,7 +176,7 @@ variable "hpcc_image_name" {
 
 variable "hpcc_namespace" {
   type        = string
-  description = "REQUIRED.  The Kubernetes namespace in which to install the HPCC and ELK modules (if enabled).\nDefault value: default"
+  description = "REQUIRED.  The Kubernetes namespace in which to install the HPCC modules (if enabled).\nDefault value: default"
   default     = "default"
   validation {
     condition     = var.hpcc_namespace != ""

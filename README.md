@@ -91,7 +91,6 @@ The following options should be set in your `terraform.tfvars` file (or entered 
 | `dns_zone_name` | string  | Name of an existing DNS zone. ***This is OPTIONAL, defaulting to an empty string.*** | Y |
 | `dns_zone_resource_group_name` | string  | Name of the resource group of the existing DNS zone (mentioned above). ***This is OPTIONAL, defaulting to an empty string.*** | Y |
 | `enable_code_security` | boolean  | Enable code security? If true, only signed ECL code will be allowed to create embedded language functions, use PIPE(), etc. | Y |
-| `enable_elk` | boolean  | Enable ELK (Elasticsearch, Logstash, and Kibana) Stack? This will also expose port 5601 on the cluster. | Y |
 | `enable_premium_storage` | boolean  | If true, premium ($$$) storage will be used for the following storage shares: Dali.  Requires that `storage_account_name` and `storage_account_resource_group_name` are also set. ***OPTIONAL, defaults to false.*** | N |
 | `enable_rbac_ad` | boolean  | Enable RBAC and AD integration for AKS? This provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings). Recommended value: true | N |
 | `enable_roxie` | boolean | Enable ROXIE? This will also expose port 8002 on the cluster. | Y |

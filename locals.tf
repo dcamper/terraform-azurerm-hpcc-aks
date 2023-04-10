@@ -169,7 +169,6 @@ locals {
 
     ecl_watch_port = 8010
     roxie_port     = 8002
-    elk_port       = 5601
 
     chart_values = {
       thor = [
@@ -344,24 +343,6 @@ locals {
 
   #----------------------------------------------------------------------------
 
-  elk = {
-    name       = "${local.metadata.product_name}-elk"
-    chart_repo = "https://hpcc-systems.github.io/helm-chart"
-    chart_name = "elastic4hpcclogs"
-
-    expose     = {
-      kibana = {
-        service = {
-          annotations = {
-            "service.beta.kubernetes.io/azure-load-balancer-internal" = "false"
-          }
-        }
-      }
-    }
-  }
-
-  #----------------------------------------------------------------------------
-
   # Corporate networks to automatically include in AKS admin and HPCC user access
   default_admin_ip_cidr_maps = {
     "alpharetta" = "66.241.32.0/19"
@@ -402,7 +383,7 @@ locals {
     var.enable_roxie ? [tostring(local.hpcc.roxie_port)] : []
   )
 
-  exposed_ports_admin_only = var.enable_elk ? [tostring(local.hpcc.elk_port)] : []
+  exposed_ports_admin_only = []
 
   exposed_ports_admin = concat(
     local.exposed_ports_users,

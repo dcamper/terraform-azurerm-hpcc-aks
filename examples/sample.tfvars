@@ -53,15 +53,6 @@ enable_roxie=false
 
 #------------------------------------------------------------------------------
 
-# Enable ELK (Elasticsearch, Logstash, and Kibana) Stack?
-# This will also expose port 5601 on the cluster.
-# Value type: boolean
-# Example entry: false
-
-enable_elk=false
-
-#------------------------------------------------------------------------------
-
 # Enable RBAC and AD integration for AKS?
 # This provides additional security for accessing the Kubernetes cluster and settings (not HPCC Systems' settings).
 # Value type: boolean
@@ -220,7 +211,7 @@ storage_account_resource_group_name=""
 
 #------------------------------------------------------------------------------
 
-# The Kubernetes namespace in which to install the HPCC and ELK modules (if enabled).
+# The Kubernetes namespace in which to install the HPCC modules (if enabled).
 # Default value: "default"
 
 # hpcc_namespace="default"

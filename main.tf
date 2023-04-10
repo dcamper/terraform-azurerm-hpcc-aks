@@ -194,28 +194,6 @@ resource "helm_release" "hpcc" {
   }
 }
 
-resource "helm_release" "elk" {
-  count = var.enable_elk ? 1 : 0
-
-  name                       = local.elk.name
-  namespace                  = try(local.hpcc.namespace, terraform.workspace)
-  chart                      = local.elk.chart_name
-  repository                 = local.elk.chart_repo
-  version                    = null
-  values                     = [yamlencode(local.elk.expose)]
-  create_namespace           = true
-  atomic                     = try(local.elk.atomic, true)
-  recreate_pods              = try(local.elk.recreate_pods, false)
-  cleanup_on_fail            = try(local.elk.cleanup_on_fail, false)
-  disable_openapi_validation = try(local.elk.disable_openapi_validation, false)
-  wait                       = try(local.elk.wait, true)
-  max_history                = try(local.elk.max_historyt, 0)
-  dependency_update          = try(local.elk.dependency_update, true)
-  timeout                    = try(local.elk.timeout, 600)
-  wait_for_jobs              = try(local.elk.wait_for_jobs, false)
-  lint                       = try(local.elk.lint, false)
-}
-
 resource "helm_release" "storage" {
   count = local.has_storage_account ? 1 : 0
 
