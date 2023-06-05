@@ -5,3 +5,6 @@ eclagent:
   prefix: hthor
   useChildProcesses: false
   type: hthor
+  resources:
+    cpu: "1"
+    memory: "1G"

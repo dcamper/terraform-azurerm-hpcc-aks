@@ -5,3 +5,6 @@ eclccserver:
   childProcessTimeLimit: 300
   maxActive: 4
   listen: []
+  resources:
+    cpu: "1"
+    memory: "4G"

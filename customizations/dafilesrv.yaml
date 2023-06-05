@@ -1,0 +1,26 @@
+dafilesrv:
+- name: rowservice
+  disabled: true # disabled by default because requires cert-manager etc. (see certificates section)
+  application: stream
+  service:
+    servicePort: 7600
+    visibility: local
+
+# Enable if bare-metal systems require read access to this systems' data planes via ~remote::
+# If legacy ~foreign:: access is required, Dali will also need to be exposed via a service definition in the dali configuration
+# NB: ingress rules should be added to limit access.
+- name: direct-access
+  disabled: true
+  application: directio
+  service:
+    servicePort: 7200
+    visibility: local
+    
+- name: spray-service
+  application: spray
+  service:
+    servicePort: 7300
+    visibility: cluster
+  resources:
+    cpu: "250m"
+    memory: "1G"

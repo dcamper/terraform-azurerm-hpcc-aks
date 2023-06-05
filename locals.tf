@@ -160,9 +160,14 @@ locals {
     values         = concat(
       [file("${path.module}/customizations/placements.yaml")],
       [yamlencode(local.esp_rewritten)],
+      [file("${path.module}/customizations/dafilesrv.yaml")],
+      [file("${path.module}/customizations/dali.yaml")],
+      [file("${path.module}/customizations/dfuserver.yaml")],
       [file("${path.module}/customizations/eclcc.yaml")],
-      [file("${path.module}/customizations/thor.yaml")],
+      [file("${path.module}/customizations/eclscheduler.yaml")],
       [file("${path.module}/customizations/hthor.yaml")],
+      [file("${path.module}/customizations/sasha.yaml")],
+      [file("${path.module}/customizations/thor.yaml")],
       [yamlencode(local.roxie_rewritten)],
       var.enable_code_security ? [file("${path.module}/customizations/security.yaml")] : []
     )

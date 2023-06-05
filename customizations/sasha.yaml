@@ -1,0 +1,56 @@
+sasha:
+  #disabled: true # disable all services. Alternatively set sasha to null (sasha: null)
+  wu-archiver:
+    #disabled: true
+    service:
+      servicePort: 8877
+    plane: sasha
+    #interval: 6 # (hours)
+    #limit: 1000 # threshold number of workunits before archiving starts (0 disables)
+    #cutoff: 8 # minimum workunit age to archive (days)
+    #backup: 0 # minimum workunit age to backup (days, 0 disables)
+    #at: "* * * * *"
+    #duration: 0 # (maxDuration) - Maximum duration to run WorkUnit archiving session (hours, 0 unlimited)
+    #throttle: 0 # throttle ratio (0-99, 0 no throttling, 50 is half speed)
+    #retryinterval: 7 # minimal time before retrying archive of failed WorkUnits (days)
+    #keepResultFiles: false # option to keep result files owned by workunits after workunit is archived
+    resources:
+      cpu: "250m"
+      memory: "1G"
+
+  dfuwu-archiver:
+    #disabled: true
+    service:
+      servicePort: 8877
+    plane: sasha
+      #forcePermissions: false
+    #limit: 1000 # threshold number of DFU workunits before archiving starts (0 disables)
+    #cutoff: 14 # minimum DFU workunit age to archive (days)
+    #interval: 24 # minimum interval between running DFU recovery archiver (in hours, 0 disables)
+    #at: "* * * * *" # schedule to run DFU workunit archiver (cron format)
+    #duration: 0 # (maxDuration) maximum duration to run DFU WorkUnit archiving session (hours, 0 unlimited)
+    #throttle: 0 # throttle ratio (0-99, 0 no throttling, 50 is half speed)
+    resources:
+      cpu: "250m"
+      memory: "1G"
+
+  dfurecovery-archiver:
+    #disabled: true
+    #limit: 20 # threshold number of DFU recovery items before archiving starts (0 disables)
+    #cutoff: 4 # minimum DFU recovery item age to archive (days)
+    #interval: 12 # minimum interval between running DFU recovery archiver(in hours, 0 disables)
+    #at: "* * * * *" # schedule to run DFU recovery archiver (cron format)
+    resources:
+      cpu: "250m"
+      memory: "1G"
+
+  file-expiry:
+    #disabled: true
+    #interval: 1
+    #at: "* 3 * * *"
+    #persistExpiryDefault: 7
+    #expiryDefault: 4
+    #user: sasha
+    resources:
+      cpu: "250m"
+      memory: "1G"

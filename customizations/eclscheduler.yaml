@@ -1,0 +1,5 @@
+eclscheduler:
+- name: eclscheduler
+  resources:
+    cpu: "250m"
+    memory: "1G"

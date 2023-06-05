@@ -12,6 +12,16 @@ roxie:
   numChannels: 2
   localAgent: false
   traceLevel: 1
+  resources:
+    cpu: "1"
+    memory: "1G"
   serverReplicas: 0
+  ## If serverReplicas is set, the resources required for the server pods can be configured separately from the agent (channel) pods
+  #serverResources:
+  #  cpu: "1"
+  #  memory: "4Gi"
+  #channelResources:
+  #  cpu: "2"
+  #  memory: "8Gi"
   topoServer:
     replicas: 1

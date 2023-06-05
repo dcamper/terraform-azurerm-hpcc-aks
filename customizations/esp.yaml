@@ -8,6 +8,9 @@ esp:
     servicePort: 8010
     # visibility defaults to local
     visibility: global
+  resources:
+    cpu: "1"
+    memory: "2G"
 - name: eclservices
   application: eclservices
   auth: none
@@ -15,6 +18,9 @@ esp:
   service:
     servicePort: 8010
     visibility: cluster
+  resources:
+    cpu: "250m"
+    memory: "1G"
 - name: eclqueries
   application: eclqueries
   auth: none
@@ -22,6 +28,9 @@ esp:
   service:
     visibility: local
     servicePort: 8002
+  resources:
+    cpu: "250m"
+    memory: "1G"
 - name: esdl-sandbox
   application: esdl-sandbox
   auth: none
@@ -29,6 +38,9 @@ esp:
   service:
     visibility: local
     servicePort: 8899
+  resources:
+    cpu: "250m"
+    memory: "1G"
 - name: sql2ecl
   application: sql2ecl
   auth: none
@@ -36,3 +48,16 @@ esp:
   service:
     visibility: local
     servicePort: 8510
+  resources:
+    cpu: "250m"
+    memory: "1G"
+- name: dfs
+  application: dfs
+  auth: none
+  replicas: 1
+  service:
+    visibility: local
+    servicePort: 8520
+  resources:
+    cpu: "250m"
+    memory: "1G"

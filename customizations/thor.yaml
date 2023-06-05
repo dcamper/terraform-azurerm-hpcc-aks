@@ -5,3 +5,16 @@ thor:
   maxJobs: 4
   maxGraphs: 2
   lingerPeriod: 300
+  maxGraphStartupTime: 600
+  managerResources:
+    cpu: "1"
+    memory: "2G"
+  workerResources:
+    cpu: "4"
+    memory: "4G"
+  workerMemory:
+    query: "3G"
+    thirdParty: "500M"
+  eclAgentResources:
+    cpu: "1"
+    memory: "2G"
