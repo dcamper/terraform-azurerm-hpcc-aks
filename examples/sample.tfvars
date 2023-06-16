@@ -117,7 +117,7 @@ extra_tags={}
 # See https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-general for more information.
 # Value type: string
 
-node_size="Standard_B4ms"
+node_size="Standard_B8ms"
 
 #------------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ node_size="Standard_B4ms"
 # Must be 2 or more.
 # Value type: integer
 
-max_node_count=2
+max_node_count=4
 
 #------------------------------------------------------------------------------
 
