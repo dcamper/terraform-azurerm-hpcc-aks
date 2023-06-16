@@ -7,4 +7,4 @@ eclagent:
   type: hthor
   resources:
     cpu: "1"
-    memory: "1G"
+    memory: "4G"

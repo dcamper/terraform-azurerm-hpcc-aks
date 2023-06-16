@@ -10,7 +10,7 @@ dali:
       #minDeltaSize: 50 # (Kb) will not start coalescing until delta log is above this threshold
       resources:
         cpu: "1"
-        memory: "1G"
+        memory: "4G"
 
   resources:
     cpu: "1"
