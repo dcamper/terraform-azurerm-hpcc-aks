@@ -5,6 +5,7 @@ thor:
   maxJobs: 4
   maxGraphs: 2
   lingerPeriod: 300
+  multiJobLinger: true
   maxGraphStartupTime: 600
   managerResources:
     cpu: "1"
