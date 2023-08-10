@@ -114,7 +114,7 @@ variable "product_name" {
   description = "REQUIRED.  Abbreviated product name, suitable for use in Azure naming.\nMust be 3-16, all lowercase or numeric characters.\nExample entry: myproduct"
   validation {
     condition     = can(regex("^[a-z][a-z0-9]{2,15}$", var.product_name))
-    error_message = "product_name must be [a-z0-9]{3,16}."
+    error_message = "Value must be [a-z0-9]{3,16}."
   }
 }
 
